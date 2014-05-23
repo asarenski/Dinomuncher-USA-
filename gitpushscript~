@@ -1,4 +1,7 @@
-echo pushing a new revision to github
+echo
+echo "pushing a new revision to github"
+echo
+
 git remote add origin https://github.com/asarenski/DinoMuncher-USA-.git
 git add -A && git commit
 git push origin master

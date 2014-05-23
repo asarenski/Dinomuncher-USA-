@@ -20,14 +20,16 @@ class DinoFrame(Frame):
         self.pieces = {} # a dictionary for any pieces on the game board
         self.numbers = {} # a dictionary for the generated numbers
 
-        canv_width = columns * size
+        canv_width = columns * size # sets the width of the board default is 8*96
         canv_height = rows * size
 
-        Frame.__init__(self, master)
+        Frame.__init__(self, master) # initializes the frame
 
-        # Canvas is a widget in Tkinter where you can draw stuff
+        # Canvas is a widget in Tkinter, in which you can draw
         self.canvas = Canvas(self, borderwidth=0, highlightthickness=0,
                                 width=canv_width, height=canv_height, background="white")
+
+        # pack method from Tkinter automatically stakes care of coordinate information
         self.canvas.pack(side="top", fill="both", expand=True, padx=2, pady=2)
 
         # binds self.refresh to the configure event
@@ -43,9 +45,11 @@ class DinoFrame(Frame):
         self.placepiece(name, row, column) # calls the placepiece function, which places it in coordinates
 
     def placepiece(self, name, row, column):
-        self.pieces[name] = (row, column)
-        x0 = (column * self.size) + int(self.size/2)
-        y0 = (row * self.size) + int(self.size/2)
+        self.pieces[name] = [row, column] #create a row, column list.. in previous code this was tuple
+        # technically x0 should be using column. instead just imagine for the coordinate system
+        # that the row just means x_i . This is so that it plays nicely with refresh event for board
+        x0 = (row * self.size) + int(self.size/2)
+        y0 = (column * self.size) + int(self.size/2)
         self.canvas.coords(name, x0, y0)
 
     '''
@@ -59,9 +63,9 @@ class DinoFrame(Frame):
         old_height = self.size
     '''
 
-    # say_hi widget command
-    def say_hi(self):
-        print "hi there, everyone!"
+    # print_coord widget command
+    def print_coord(self):
+        print self.pieces['player1']
 
     # initialize widgets
     def createWidgets(self):
@@ -72,14 +76,12 @@ class DinoFrame(Frame):
         self.QUIT["fg"]   = "red"  # foreground
         self.QUIT["bg"]   = "blue" # background
         self.QUIT["command"] =  self.quit
-
         self.QUIT.pack({"side": "left"})
 
-        # hi there button
+        # coordinates button
         self.hi_there = Button(self)
-        self.hi_there["text"] = "Hello",
-        self.hi_there["command"] = self.say_hi
-
+        self.hi_there["text"] = "Print_Coord",
+        self.hi_there["command"] = self.print_coord
         self.hi_there.pack({"side": "left"})
 
     # Redraws the board, such as when the window is resized
@@ -101,26 +103,46 @@ class DinoFrame(Frame):
 
         # use this when you start to put characters on the board
         # need to do the same thing with the numbers that we put on the board
-
         for name in self.pieces:
             self.placepiece(name, self.pieces[name][0], self.pieces[name][1])
-            # places the piece back where it was on the canvas
+            # places the piece back where it was on the canvas after the redraw
 
-            self.canvas.tag_raise("piece")
+            self.canvas.tag_raise("piece") # tag raise makes "piece" the top layer
             self.canvas.tag_lower("square")
         # put code here for numbers
 
     #controls
+    # these events will move the player 96 pixels by default
     def leftkey(self,event):
-        print "monkeys"
+        if self.pieces['player1'][0]== 0: # goes into the pieces dictionary and pulls the coord list to check
+            print "cannot move past border"
+        else:
+            self.canvas.move('player1', -1*self.size, 0) # moves the player 1 space over, which is 96 pixels
+            self.pieces['player1'][0] = self.pieces['player1'][0]-1 # changes the coordinate system
+
     def rightkey(self,event):
-        print "are"
+        if self.pieces['player1'][0]== 7:
+            print "cannot move past border"
+        else:
+            self.canvas.move('player1', self.size, 0)
+            self.pieces['player1'][0] = self.pieces['player1'][0]+1
+
     def upkey(self,event):
-        print "the"
+        if self.pieces['player1'][1]== 0:
+            print "cannot move past border"
+        else:
+            self.canvas.move('player1', 0, -1*self.size)
+            self.pieces['player1'][1] = self.pieces['player1'][1]-1
+
     def downkey(self,event):
-        print "very"
-    def spacekey(self,event):
-        print "cool"
+        if self.pieces['player1'][1]== 7:
+            print "cannot move past border"
+        else:
+            self.canvas.move('player1', 0, 1*self.size)
+            self.pieces['player1'][1] = self.pieces['player1'][1]+1
+
+    def spacebar(self,event):
+        print "best"
 
 #end
 
@@ -131,7 +153,7 @@ def main():
     app.pack(side="top", fill="both", expand="true", padx=4, pady=4)
 
     # calling the piece method and initializes player1
-    player1 = "rex_skull1.gif"
+    player1 = "rex_skull2.gif"
     app.piece("player1",player1,0,0)
 
     # key bindings
@@ -140,7 +162,7 @@ def main():
     root.bind('<Right>',app.rightkey)
     root.bind('<Up>',app.upkey)
     root.bind('<Down>',app.downkey)
-    root.bind('<Space>',app.leftkey)
+    root.bind('<space>',app.spacebar)
 
     root.mainloop()
     root.destroy()

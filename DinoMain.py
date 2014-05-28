@@ -43,12 +43,12 @@ class DinoFrame(Frame):
         self.color1 = color1
         self.color2 = color2
         self.pieces = {} # a dictionary for any pieces on the game board
-        self.number_marker = 0 # number marker for the numbers dictionary
-        self.drawn_number = []
-        self.numbers = {} # a dictionary for the generated numbers
+        self.number_marker = [] # number marker for right or wrong answer
+        self.drawn_number = [] # number list used to draw
         self.op_number = 0 # the comparative number
         self.op_type = '' # the type of comparison operation
         self.v = StringVar() # string variable for the label
+        self.point_track = 0
 
         canv_width = columns * size # sets the width of the board default 6*96
         canv_height = rows * size
@@ -87,17 +87,20 @@ class DinoFrame(Frame):
         self.createWidgets()
 
     # Definitions for the operation selection (callback functions)
+    # these unpack the num_dict and turn it into useful lists
     def callback1(self):
         self.op_type = "Multiples"
         self.lift()
-        #have to move all of this stuff to the callback functions
-        math_tuple = math_main(self.op_type)
-        #num_list = str("2+4")
-        num_list = math_tuple[0]
-        op_number = math_tuple[1]
-
-        self.op_number = op_number # sets the instance of op_number in the frame to the op_number here
-        self.shownumber(num_list) # inputs num_list to show numbers on board
+        math_dict = math_main(self.op_type)
+        print math_dict
+        for i in range (30):
+            xtuple = ()
+            xtuple = math_dict[i]
+            self.drawn_number.append(xtuple[0])
+            self.number_marker.append(xtuple[3])
+        print self.drawn_number
+        self.op_number = xtuple[2]
+        self.shownumber(self.drawn_number) # inputs num_list to show numbers on board
         self.v.set(self.op_type + " of " + str(self.op_number))
 
         print self.op_type
@@ -141,8 +144,8 @@ class DinoFrame(Frame):
 
         # function print_coord widget command
     def print_numbers(self):
-        print self.numbers
         print self.drawn_number
+        print self.number_marker
 
     # function to put the image of the piece on the board
     def piece(self, name, image, row=0, column=0):
@@ -174,20 +177,6 @@ class DinoFrame(Frame):
                 y1 = (row * self.size) + int(self.size/2)-0
                 text1 = drawn_number[counter]
                 self.canvas.create_text(x1,y1, font =("Times", "24", "bold"), text=text1, tags="the_text")
-
-        # for loop that adds to the dictionary self.numbers
-        # also performs tests based on the op_type
-        # a reminder that numbers_entry is 0:29 (space location on board)
-        # drawn_numbers is the list of the numbers that are being drawn on the board
-        for i in range(self.rows*self.columns):
-            if isinstance(drawn_number[i],int) == True:
-                if self.op_type == "Multiples" and drawn_number[i] % self.op_number == 0:
-                    self.number_marker = 1
-                else:
-                    self.number_marker = 0
-            else:
-                self.number_marker = 0
-            self.numbers[i] = (drawn_number[i],self.number_marker)
 
     # draws the board
     def refresh(self, event):
@@ -256,16 +245,16 @@ class DinoFrame(Frame):
         if self.drawn_number[numbers_entry] == '': # the the drawn_number at that point is blank
             # do nothing
             print "no entry"
-        elif self.op_type == "Multiples":
-            if self.drawn_number[numbers_entry] % self.op_number == 0:
-                print "congrats" # and add points
-                self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
-            else:
-                print "wrong"
-                self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
-                # and subtract a life
-        else:
+        elif self.number_marker[numbers_entry] == 1:
+            self.point_track += 10
+            print "congrats" + "you now have " + str(self.point_track) + " points"
             self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
+            self.number_marker[numbers_entry] = 0
+        else:
+            print "wrong"
+            self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
+            self.number_marker[numbers_entry] = 0
+                # and subtract a life
         self.shownumber(self.drawn_number) # runs the shownumber method with new list
 
 # end of DinoFrame

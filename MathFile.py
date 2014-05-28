@@ -18,7 +18,7 @@ class Multiples(Mathfile):
     def create_list(self):
         multiple_of = random.randrange(2, 9)
         self.op_number = multiple_of
-        for i in range(5):
+        for i in range(4):
             n = self.num_list[i]
             r = n % multiple_of
             while r!=0:

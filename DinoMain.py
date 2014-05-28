@@ -7,6 +7,17 @@ Dinomuncher USA!
 from Tkinter import * # tkinter is a GUI writing module that can also be used to write games
 from MathFile import math_main
 
+class Select_Menu(Frame):
+    def __init__(self, master, text, height, width, *args, **kwargs):
+        self.height = height
+        self.width = width
+
+        Frame.__init__(self, *args, borderwidth=20, **kwargs)
+        self.height = height
+        self.width = width
+        button = Button(self, text=text, font=('Comic Sans MS', 20),command=lambda: self.callback())
+        button.pack(side="top", pady = 50)
+
 class DinoFrame(Frame):
     def __init__(self, master=None, rows=5, columns=6, size=96, color1='old lace', color2="pale turquoise"):
         # size is the size of a square in pixels
@@ -18,24 +29,32 @@ class DinoFrame(Frame):
         self.color1 = color1
         self.color2 = color2
         self.pieces = {} # a dictionary for any pieces on the game board
-        self.numbers = {} # a dictionary for the generated numbers
+        self.number_marker = 0 # number marker for the numbers dictionary
         self.drawn_number = []
+        self.numbers = {} # a dictionary for the generated numbers
         self.op_number = 0 # the comparative number
-        self.op_type = 'monkey' # the type of comparison operation
+        self.op_type = '' # the type of comparison operation
         self.v = StringVar() # string variable for the label
 
-        canv_width = columns * size # sets the width of the board default is 8*96
+        canv_width = columns * size # sets the width of the board default 6*96
         canv_height = rows * size
 
         Frame.__init__(self, master) # initializes the frame
+
+        # sets the data for select menu
+        select1 = Select_Menu(self, 'Multiples', height=100, width=300)
+        select1.callback = self.lift
+        select1.place(x=0, y=0, relwidth=1, relheight=1)
+        select1.lift()
 
         # Canvas is a widget in Tkinter, in which you can draw
         self.canvas = Canvas(self, borderwidth=0, highlightthickness=0,
                                 width=canv_width, height=canv_height, background="white")
 
         # creates the label first so it is at the top
-        Label(master,justify="c", textvariable=self.v).pack({"side": "top"})
-        self.v.set("default")
+        label1 = Label(master,justify="c", textvariable=self.v,
+                       font=("TkHeadingFont", "16"), pady=10).pack({"side": "top"})
+        self.v.set("Select an Operation")
 
         # pack method from Tkinter automatically stakes care of coordinate information
         self.canvas.pack(side="top", fill="both", expand=True, padx=2, pady=2)
@@ -57,15 +76,15 @@ class DinoFrame(Frame):
         self.QUIT["command"] =  self.quit
         self.QUIT.pack({"side": "left"})
 
-        # print coordinates button
+        # print numbers button
         self.hi_there = Button(self)
-        self.hi_there["text"] = "Print_Coord",
-        self.hi_there["command"] = self.print_coord
+        self.hi_there["text"] = "Print_Numbers",
+        self.hi_there["command"] = self.print_numbers
         self.hi_there.pack({"side": "left"})
 
         # function print_coord widget command
-    def print_coord(self):
-        print self.pieces['player1']
+    def print_numbers(self):
+        print self.numbers
 
     # function to put the image of the piece on the board
     def piece(self, name, image, row=0, column=0):
@@ -93,15 +112,24 @@ class DinoFrame(Frame):
         for row in range(self.rows):
             for col in range(self.columns):
                 counter += 1
-                # drawn_number needs to get implemented into the loop
-                x1 = (col * self.size) + int(self.size/2)-3
-                y1 = (row * self.size) + int(self.size/2)-3
+                x1 = (col * self.size) + int(self.size/2)-0
+                y1 = (row * self.size) + int(self.size/2)-0
                 text1 = drawn_number[counter]
                 self.canvas.create_text(x1,y1, font =("Times", "24", "bold"), text=text1, tags="the_text")
 
         # for loop that adds to the dictionary self.numbers
-        for i in range(self.rows*self.columns):
-            self.numbers[i] = [drawn_number[i]]
+        # also performs tests based on the op_type
+        # a reminder that numbers_entry is 0:29 (space location on board)
+        # drawn_numbers is the list of the numbers that are being drawn on the board
+        for i in range(self.rows*self.columns-1):
+            if isinstance(drawn_number[i],int) == True:
+                if self.op_type == "Multiples" and drawn_number[i] % self.op_number == 0:
+                    self.number_marker = 1
+                else:
+                    self.number_marker = 0
+            else:
+                self.number_marker = 0
+            self.numbers[i] = (drawn_number[i],self.number_marker)
 
     # draws the board
     def refresh(self, event):
@@ -161,28 +189,26 @@ class DinoFrame(Frame):
     def spacebar(self,event):
         x0 = self.pieces['player1'][0] # x var of coords
         y0 = self.pieces['player1'][1] # y var of coords
-        print self.op_type
 
         numbers_entry = x0 + y0*self.columns # this is the translation to 0:29 for numbers dictionary
-        print "space"
+        print "space hit"
 
-        if self.drawn_number[numbers_entry] == '':
+        # a reminder that numbers_entry is 0:29 (space location on board)
+        # drawn_numbers is the list of the numbers that are being drawn on the board
+        if self.drawn_number[numbers_entry] == '': # the the drawn_number at that point is blank
             # do nothing
             print "no entry"
         elif self.op_type == "Multiples":
             if self.drawn_number[numbers_entry] % self.op_number == 0:
                 print "congrats" # and add points
                 self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
-                self.shownumber(self.drawn_number)
             else:
-                print "failed"
+                print "wrong"
                 self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
-                self.shownumber(self.drawn_number)
                 # and subtract a life
         else:
             self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
-            self.shownumber(self.drawn_number) # runs the shownumber method with the new list of numbers
-
+        self.shownumber(self.drawn_number) # runs the shownumber method with new list
 
 # end of DinoFrame
 
@@ -209,6 +235,8 @@ def main():
     app.op_number = op_number # sets the instance of op_number in the frame to the op_number here
     app.shownumber(num_list) # inputs num_list to show numbers on board
     app.v.set(app.op_type + " of " + str(app.op_number))
+
+    #testing
 
     # key bindings
     root.bind('<Escape>', lambda e: root.quit()) # lambda allows you to write user input functions

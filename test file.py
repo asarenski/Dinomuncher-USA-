@@ -36,3 +36,5 @@ print monkeyman.name
 ----------------------------------------------
 '''
 
+print type(1)
+print type("monkey")

@@ -7,6 +7,7 @@ Dinomuncher USA!
 from Tkinter import * # tkinter is a GUI writing module that can also be used to write games
 from MathFile import math_main
 
+
 class Select_Menu(Frame):
     def __init__(self, master, text, height, width, *args, **kwargs):
         self.height = height
@@ -15,8 +16,21 @@ class Select_Menu(Frame):
         Frame.__init__(self, *args, borderwidth=20, **kwargs)
         self.height = height
         self.width = width
-        button = Button(self, text=text, font=('Comic Sans MS', 20),command=lambda: self.callback())
-        button.pack(side="top", pady = 50)
+        button1 = Button(self, text="Multiples", font=('Comic Sans MS', 20),command=lambda: self.callback1())
+        button1.pack(side="top", pady = 20)
+
+        button2 = Button(self, text="Multiplication", font=('Comic Sans MS', 20),command=lambda: self.callback2())
+        button2.pack(side="top", pady = 20)
+
+        button3 = Button(self, text="Division", font=('Comic Sans MS', 20),command=lambda: self.callback3())
+        button3.pack(side="top", pady = 20)
+
+        button4 = Button(self, text="Addition", font=('Comic Sans MS', 20),command=lambda: self.callback4())
+        button4.pack(side="top", pady = 20)
+
+        button5 = Button(self, text="Subtraction", font=('Comic Sans MS', 20),command=lambda: self.callback5())
+        button5.pack(side="top", pady = 20)
+
 
 class DinoFrame(Frame):
     def __init__(self, master=None, rows=5, columns=6, size=96, color1='old lace', color2="pale turquoise"):
@@ -41,11 +55,18 @@ class DinoFrame(Frame):
 
         Frame.__init__(self, master) # initializes the frame
 
-        # sets the data for select menu
-        select1 = Select_Menu(self, 'Multiples', height=100, width=300)
-        select1.callback = self.lift
-        select1.place(x=0, y=0, relwidth=1, relheight=1)
-        select1.lift()
+
+        # setting all the buttons for the select menu
+        select1 = Select_Menu(self, "Multiples", height=100, width=300)
+        # setting the button commands to the functions below
+        select1.callback1 = self.callback1
+        select1.callback2 = self.callback2
+        select1.callback3 = self.callback3
+        select1.callback4 = self.callback4
+        select1.callback5 = self.callback5
+
+        select1.place(x=0, y=50, relwidth=1, relheight=1)
+        select1.lift
 
         # Canvas is a widget in Tkinter, in which you can draw
         self.canvas = Canvas(self, borderwidth=0, highlightthickness=0,
@@ -64,6 +85,33 @@ class DinoFrame(Frame):
 
         # initialize widgets
         self.createWidgets()
+
+    # Definitions for the operation selection
+    def callback1(self):
+        self.op_type = "Multiples"
+        self.v.set(self.op_type + " of " + str(self.op_number))
+        self.lift()
+        print self.op_type
+    def callback2(self):
+        self.op_type = "Multiplication"
+        self.v.set(" x " + str(self.op_number))
+        self.lift()
+        print self.op_type
+    def callback3(self):
+        self.op_type = "Division"
+        self.v.set(" / " + str(self.op_number))
+        self.lift()
+        print self.op_type
+    def callback4(self):
+        self.op_type = "Addition"
+        self.v.set(" + " + str(self.op_number))
+        self.lift()
+        print self.op_type
+    def callback5(self):
+        self.op_type = "Subtraction"
+        self.v.set(" - " + str(self.op_number))
+        self.lift()
+        print self.op_type
 
     # function for pushbutton widgets
     def createWidgets(self):
@@ -230,11 +278,9 @@ def main():
     math_tuple = math_main()
     num_list = math_tuple[0]
     op_number = math_tuple[1]
-    app.op_type = "Multiples"
 
     app.op_number = op_number # sets the instance of op_number in the frame to the op_number here
     app.shownumber(num_list) # inputs num_list to show numbers on board
-    app.v.set(app.op_type + " of " + str(app.op_number))
 
     #testing
 

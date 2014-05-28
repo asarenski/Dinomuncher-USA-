@@ -9,6 +9,7 @@ class Mathfile():
     def __init__(self,num_list):
         self.num_list = num_list
         self.op_number = 0
+        self.op_type = Multiples
         for i in range(30):
             number = random.randrange(1,81)
             self.num_list.append(number)
@@ -31,7 +32,9 @@ def math_main():
     num_list = [] # initializes the num_list in this instance
     op_number = 0 # initializes op_number in this instance
 
-    multi_instance = Multiples(num_list)
+    op_type = "Multiples"
+    if op_type == "Multiples":
+        multi_instance = Multiples(num_list)
     multi_instance.create_list()
     op_number = multi_instance.op_number # sets op_number equal to the one in the Multiples instance
 

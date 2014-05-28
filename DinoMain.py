@@ -1,5 +1,5 @@
 __author__ = 'adam'
-'''making a new change'''
+'''making a new'''
 '''
 Dinomuncher USA!
 '''

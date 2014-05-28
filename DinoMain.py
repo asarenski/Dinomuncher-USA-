@@ -86,11 +86,20 @@ class DinoFrame(Frame):
         # initialize widgets
         self.createWidgets()
 
-    # Definitions for the operation selection
+    # Definitions for the operation selection (callback functions)
     def callback1(self):
         self.op_type = "Multiples"
-        self.v.set(self.op_type + " of " + str(self.op_number))
         self.lift()
+        #have to move all of this stuff to the callback functions
+        math_tuple = math_main(self.op_type)
+        #num_list = str("2+4")
+        num_list = math_tuple[0]
+        op_number = math_tuple[1]
+
+        self.op_number = op_number # sets the instance of op_number in the frame to the op_number here
+        self.shownumber(num_list) # inputs num_list to show numbers on board
+        self.v.set(self.op_type + " of " + str(self.op_number))
+
         print self.op_type
     def callback2(self):
         self.op_type = "Multiplication"
@@ -133,6 +142,7 @@ class DinoFrame(Frame):
         # function print_coord widget command
     def print_numbers(self):
         print self.numbers
+        print self.drawn_number
 
     # function to put the image of the piece on the board
     def piece(self, name, image, row=0, column=0):
@@ -156,7 +166,7 @@ class DinoFrame(Frame):
         counter = -1
         self.canvas.delete("the_text")
 
-        # loop draws the numbers
+        # loop draws the drawn numbers
         for row in range(self.rows):
             for col in range(self.columns):
                 counter += 1
@@ -169,7 +179,7 @@ class DinoFrame(Frame):
         # also performs tests based on the op_type
         # a reminder that numbers_entry is 0:29 (space location on board)
         # drawn_numbers is the list of the numbers that are being drawn on the board
-        for i in range(self.rows*self.columns-1):
+        for i in range(self.rows*self.columns):
             if isinstance(drawn_number[i],int) == True:
                 if self.op_type == "Multiples" and drawn_number[i] % self.op_number == 0:
                     self.number_marker = 1
@@ -272,15 +282,6 @@ def main():
     # calling the piece method and initializes player1
     player1 = "rex_skull2.gif" # sets the variable to a string
     app.piece("player1",player1,0,0) # calls the piece method arguments are (name, image, row, column)
-
-    #have to set variable math_monkey to the return of math_main()
-    # have to input a list as an arguement for shownumber
-    math_tuple = math_main()
-    num_list = math_tuple[0]
-    op_number = math_tuple[1]
-
-    app.op_number = op_number # sets the instance of op_number in the frame to the op_number here
-    app.shownumber(num_list) # inputs num_list to show numbers on board
 
     #testing
 

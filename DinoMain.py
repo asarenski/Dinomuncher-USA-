@@ -37,24 +37,28 @@ class DinoFrame(Frame):
         # size is the size of a square in pixels
 
         # initialize variables
+        # initially used for self.refresh, which is the checker board
         self.rows = rows
         self.columns = columns
         self.size = size
         self.color1 = color1
         self.color2 = color2
+
         self.pieces = {} # a dictionary for any pieces on the game board
+
+        # variables used intially by the callbacks and drawing the numbers
         self.number_marker = [] # number marker for right or wrong answer
         self.drawn_number = [] # number list used to draw
         self.op_number = 0 # the comparative number
         self.op_type = '' # the type of comparison operation
-        self.v = StringVar() # string variable for the label
-        self.point_track = 0
+
+        self.v = StringVar() # string variable for label for operation
+        self.point_track = 0 # int variable used to track points
 
         canv_width = columns * size # sets the width of the board default 6*96
         canv_height = rows * size
 
         Frame.__init__(self, master) # initializes the frame
-
 
         # setting all the buttons for the select menu
         select1 = Select_Menu(self, "Multiples", height=100, width=300)
@@ -64,9 +68,8 @@ class DinoFrame(Frame):
         select1.callback3 = self.callback3
         select1.callback4 = self.callback4
         select1.callback5 = self.callback5
-
         select1.place(x=0, y=50, relwidth=1, relheight=1)
-        select1.lift
+        select1.lift # sets the select menu as the top layer on Frame
 
         # Canvas is a widget in Tkinter, in which you can draw
         self.canvas = Canvas(self, borderwidth=0, highlightthickness=0,
@@ -91,39 +94,71 @@ class DinoFrame(Frame):
     def callback1(self):
         self.op_type = "Multiples"
         self.lift()
-        math_dict = math_main(self.op_type)
-        print math_dict
+        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+
+        # unpacks the num_dict into xtuple
+        # xtuple is then used to create the drawn_number list and the number_marker_list
+        # the third value of xtuple is taken as a True or False for solving the operation requirement
         for i in range (30):
             xtuple = ()
             xtuple = math_dict[i]
             self.drawn_number.append(xtuple[0])
             self.number_marker.append(xtuple[3])
-        print self.drawn_number
         self.op_number = xtuple[2]
         self.shownumber(self.drawn_number) # inputs num_list to show numbers on board
         self.v.set(self.op_type + " of " + str(self.op_number))
 
-        print self.op_type
     def callback2(self):
         self.op_type = "Multiplication"
-        self.v.set(" x " + str(self.op_number))
         self.lift()
-        print self.op_type
+        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+        for i in range (30):
+            xtuple = ()
+            xtuple = math_dict[i]
+            self.drawn_number.append(str(xtuple[0])+'x'+str(xtuple[1]))
+            self.number_marker.append(xtuple[3])
+        self.op_number = xtuple[2]
+        self.shownumber(self.drawn_number)
+        self.v.set("Equals " + str(self.op_number))
+
     def callback3(self):
         self.op_type = "Division"
-        self.v.set(" / " + str(self.op_number))
         self.lift()
-        print self.op_type
+        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+        for i in range (30):
+            xtuple = ()
+            xtuple = math_dict[i]
+            self.drawn_number.append(str(xtuple[0])+'/'+str(xtuple[1]))
+            self.number_marker.append(xtuple[3])
+        self.op_number = xtuple[2]
+        self.shownumber(self.drawn_number)
+        self.v.set("Equals " + str(self.op_number))
+
     def callback4(self):
         self.op_type = "Addition"
-        self.v.set(" + " + str(self.op_number))
         self.lift()
-        print self.op_type
+        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+        for i in range (30):
+            xtuple = ()
+            xtuple = math_dict[i]
+            self.drawn_number.append(str(xtuple[0])+'+'+str(xtuple[1]))
+            self.number_marker.append(xtuple[3])
+        self.op_number = xtuple[2]
+        self.shownumber(self.drawn_number)
+        self.v.set("Equals " + str(self.op_number))
+
     def callback5(self):
         self.op_type = "Subtraction"
-        self.v.set(" - " + str(self.op_number))
         self.lift()
-        print self.op_type
+        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+        for i in range (30):
+            xtuple = ()
+            xtuple = math_dict[i]
+            self.drawn_number.append(str(xtuple[0])+'-'+str(xtuple[1]))
+            self.number_marker.append(xtuple[3])
+        self.op_number = xtuple[2]
+        self.shownumber(self.drawn_number)
+        self.v.set("Equals " + str(self.op_number))
 
     # function for pushbutton widgets
     def createWidgets(self):

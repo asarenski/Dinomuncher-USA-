@@ -87,27 +87,117 @@ class Multiplication(Mathfile):
         self.shuffle_the_list()
         self.create_dict()
 
+class Division(Mathfile):
+    def create_list(self):
+        multiplication_table = []
+        self.op_number = random.randrange(3,11)
+        for i in range(3,11):
+            for j in range (3,11):
+                multiplication_table.append(i*j)
+        for i in range(30):
+            number = random.choice(multiplication_table)
+            number2 = random.randrange(1, 11)
+            self.num_list.append(number)
+            self.num_list2.append(number2)
+
+        #makes sure the first 4 entries satisfy op
+        for i in range(4):
+            x = self.num_list[i]
+            y = self.num_list2[i]
+            while self.num_list2[i] * self.op_number != self.num_list[i]:
+                y = random.randrange(1,11)
+                x = self.op_number * y
+                self.num_list[i] = x
+                self.num_list2[i] = y
+
+        #marks the numbers
+        for i in range(30):
+            if self.num_list[i] // self.num_list2[i] == self.op_number \
+                                  and self.num_list[i] % self.num_list2[i] == 0:
+                self.number_marker.append(1)
+            else:
+                self.number_marker.append(0)
+        self.shuffle_the_list()
+        self.create_dict()
+
+class Addition(Mathfile):
+    def create_list(self):
+        addition_table = []
+        for i in range(1,11):
+            for j in range (1,11):
+                addition_table.append(i+j)
+        self.op_number = random.choice(addition_table)
+        for i in range(30):
+            number = random.randrange(1,11)
+            number2 = random.randrange(1, 11)
+            self.num_list.append(number)
+            self.num_list2.append(number2)
+        for i in range(4):
+            x = self.num_list[i]
+            y = self.num_list2[i]
+            while self.num_list[i] + self.num_list2[i] != self.op_number:
+                y = random.randrange(1,11)
+                x = self.op_number - y
+                self.num_list[i] = x
+                self.num_list2[i] = y
+        for i in range(30):
+            if self.num_list[i] + self.num_list2[i] == self.op_number:
+                self.number_marker.append(1)
+            else:
+                self.number_marker.append(0)
+        self.shuffle_the_list()
+        self.create_dict()
+
+class Subtraction(Mathfile):
+    def create_list(self):
+        addition_table = []
+        for i in range(1,25):
+            for j in range (1,25):
+                addition_table.append(i+j)
+        self.op_number = random.choice(addition_table)
+        for i in range(30):
+            number = random.randrange(3,50)
+            number2 = random.randrange(1, 20)
+            self.num_list.append(number)
+            self.num_list2.append(number2)
+        for i in range(4):
+            x = self.num_list[i]
+            y = self.num_list2[i]
+            while self.num_list2[i] + self.op_number != self.num_list[i] :
+                y = random.randrange(1,20)
+                x = self.op_number + y
+                self.num_list[i] = x
+                self.num_list2[i] = y
+        for i in range(30):
+            if self.num_list[i] - self.num_list2[i] == self.op_number:
+                self.number_marker.append(1)
+            else:
+                self.number_marker.append(0)
+        self.shuffle_the_list()
+        self.create_dict()
 
 def math_main(op_type): #note that op_type must be a string to work
-
+    op_type = op_type
     # selection for Multiples operation
     if op_type == "Multiples":
-        multi_instance = Multiples()
-        multi_instance.create_list()
-        num_list = multi_instance.num_list
-        num_list2 = multi_instance.num_list2
-        op_number = multi_instance.op_number # sets op_number equal to the one in the Multiples instance
-        number_marker = multi_instance.number_marker
-        num_dict = multi_instance.num_dict
-
+        op_instance = Multiples()
     # selection for Multiplication operation
-    if op_type == "Multiplication":
-        multic_instance = Multiplication()
-        multic_instance.create_list()
-        num_list = multic_instance.num_list
-        num_list2 = multic_instance.num_list2 # sets op_number equal to the one in the Multiples instance
-        op_number = multic_instance.op_number
-        number_marker = multic_instance.number_marker
-        num_dict = multic_instance.num_dict
+    elif op_type == "Multiplication":
+        op_instance = Multiplication()
+    elif op_type == "Division":
+        op_instance = Division()
+    elif op_type == "Addition":
+        op_instance = Addition()
+    elif op_type == "Subtraction":
+        op_instance = Subtraction()
 
+
+    op_instance.create_list()
+    num_list = op_instance.num_list
+    num_list2 = op_instance.num_list2 # sets op_number equal to the one in the Multiples instance
+    op_number = op_instance.op_number
+    number_marker = op_instance.number_marker
+    num_dict = op_instance.num_dict
+
+    #print num_dict
     return (num_dict) # returns the entire num_dict

@@ -1,7 +1,0 @@
-echo
-echo "overwriting the latest revision"
-echo
-
-git remote add origin https://github.com/asarenski/DinoMuncher-USA-.git
-git add -A && git commit
-git push -u --force origin master

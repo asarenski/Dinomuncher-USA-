@@ -53,7 +53,9 @@ class DinoFrame(Frame):
         self.op_type = '' # the type of comparison operation
 
         self.v = StringVar() # string variable for label for operation
+        self.v1 = StringVar() # string variable used for the score tracker
         self.point_track = 0 # int variable used to track points
+        self.life_track = 3 # number of lives at the start
 
         canv_width = columns * size # sets the width of the board default 6*96
         canv_height = rows * size
@@ -61,7 +63,7 @@ class DinoFrame(Frame):
         Frame.__init__(self, master) # initializes the frame
 
         # setting all the buttons for the select menu
-        select1 = Select_Menu(self, "Multiples", height=100, width=300)
+        select1 = Select_Menu(self, '', height=100, width=300)
         # setting the button commands to the functions below
         select1.callback1 = self.callback1
         select1.callback2 = self.callback2
@@ -80,6 +82,9 @@ class DinoFrame(Frame):
                        font=("TkHeadingFont", "16"), pady=10).pack({"side": "top"})
         self.v.set("Select an Operation")
 
+        label2 = Label(master, justify='c', textvariable=self.v1).pack({'side':'top'})
+        self.v1.set('Score: 0')
+
         # pack method from Tkinter automatically stakes care of coordinate information
         self.canvas.pack(side="top", fill="both", expand=True, padx=2, pady=2)
 
@@ -88,6 +93,9 @@ class DinoFrame(Frame):
 
         # initialize widgets
         self.createWidgets()
+
+        # initialize the life counter
+        self.rex_lives()
 
     # Definitions for the operation selection (callback functions)
     # these unpack the num_dict and turn it into useful lists
@@ -176,6 +184,22 @@ class DinoFrame(Frame):
         self.hi_there["text"] = "Print_Numbers",
         self.hi_there["command"] = self.print_numbers
         self.hi_there.pack({"side": "left"})
+
+    def rex_lives(self):
+        #lives label
+        self.LIVES = Label(self)
+        if self.life_track == 3:
+            imgstr = "rex_lives3.gif"
+        elif self.life_track == 2:
+            imgstr = "rex_lives2.gif"
+        elif self.life_track == 1:
+            imgstr = "rex_lives1.gif"
+        elif self.life_track <= 0:
+            imgstr = "rex_lives0.gif"
+            self.v1.set("Game Over , Your Score:" + str(self.point_track))
+        self.lives_image = PhotoImage(file=imgstr)
+        self.LIVES['image'] = self.lives_image
+        self.LIVES.pack({'side':'right'})
 
         # function print_coord widget command
     def print_numbers(self):
@@ -281,15 +305,21 @@ class DinoFrame(Frame):
             # do nothing
             print "no entry"
         elif self.number_marker[numbers_entry] == 1:
-            self.point_track += 10
-            print "congrats" + "you now have " + str(self.point_track) + " points"
-            self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
-            self.number_marker[numbers_entry] = 0
+            if self.life_track <= 0:
+                pass
+            else:
+                self.point_track += 10
+                self.v1.set("Score: " +str(self.point_track))
+                print "congrats" + "you now have " + str(self.point_track) + " points"
+                self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
+                self.number_marker[numbers_entry] = 0
         else:
             print "wrong"
             self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
             self.number_marker[numbers_entry] = 0
-                # and subtract a life
+            self.life_track -= 1 # subtract a life from the life counter
+            self.LIVES.destroy()
+            self.rex_lives() # re-do the image for lives
         self.shownumber(self.drawn_number) # runs the shownumber method with new list
 
 # end of DinoFrame

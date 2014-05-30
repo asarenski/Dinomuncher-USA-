@@ -209,8 +209,6 @@ class DinoFrame(Frame):
             self.canvas.delete("the_text")
             #self.canvas.create_text(96*3,96, font =("Times", "24", "bold"), text="Game Over")
             #self.canvas.create_text(96*3,128, font =("Times", "18", "bold"), text="game will restart")
-
-            sleep(2)
             self.restart_game()
 
         self.lives_image = PhotoImage(file=imgstr)
@@ -240,6 +238,31 @@ class DinoFrame(Frame):
         self.LIVES.destroy()
         self.rex_lives() # re-do the image for lives
 
+    def half_restart_game(self):
+        self.canvas.delete("piece")
+        self.canvas.delete("the_text")
+
+        player1 = "rex_skull2.gif"
+        self.piece("player1",player1,0,0)
+        self.select1.lift
+
+        del self.number_marker
+        self.number_marker = []
+        del self.drawn_number
+        self.drawn_number = []
+        self.op_number = 0 # the comparative number
+
+        if self.op_type == "Mutliples":
+            self.callback1()
+        if self.op_type == "Multiplication":
+            self.callback2()
+        if self.op_type == "Division":
+            self.callback3()
+        if self.op_type == "Addition":
+            self.callback4()
+        if self.op_type == "Subtraction":
+            self.callback5()
+
     # function print_coord widget command
     def print_numbers(self):
         print self.drawn_number
@@ -265,16 +288,14 @@ class DinoFrame(Frame):
     # function to draw the numbers on the board
     def shownumber(self, drawn_number):
         self.drawn_number = drawn_number
-        counter = -1
         self.canvas.delete("the_text")
 
         # loop draws the drawn numbers
         for row in range(self.rows):
             for col in range(self.columns):
-                counter += 1
                 x1 = (col * self.size) + int(self.size/2)-0
                 y1 = (row * self.size) + int(self.size/2)-0
-                text1 = drawn_number[counter]
+                text1 = drawn_number[col+row*self.columns]
                 self.canvas.create_text(x1,y1, font =("Times", "24", "bold"), text=text1, tags="the_text")
 
     # initializes the checkered board and
@@ -355,20 +376,20 @@ class DinoFrame(Frame):
                 self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
                 self.number_marker[numbers_entry] = 0
                 if 1 in self.number_marker:
-                    pass
+                    self.shownumber(self.drawn_number)
                 else:
                     print "you win"
                     self.level_track += 1
-                    self.restart_game()
-            self.shownumber(self.drawn_number)
+                    self.half_restart_game() # needs to be a half restart
         else:
             print "wrong"
-            self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
-            self.number_marker[numbers_entry] = 0 # make the numbers_marker 0
             self.life_track -= 1 # subtract a life from the life counter
             self.LIVES.destroy()
             self.rex_lives() # re-do the image for lives
+            print self.life_track
             if self.life_track > 0:
+                self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
+                self.number_marker[numbers_entry] = 0 # make the numbers_marker 0
                 self.shownumber(self.drawn_number) # runs the shownumber method with new list
             else:
                 pass

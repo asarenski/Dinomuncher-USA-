@@ -6,6 +6,7 @@ Dinomuncher USA!
 
 from Tkinter import * # tkinter is a GUI writing module that can also be used to write games
 from MathFile import math_main
+from time import sleep
 
 
 class Select_Menu(Frame):
@@ -54,7 +55,9 @@ class DinoFrame(Frame):
 
         self.v = StringVar() # string variable for label for operation
         self.v1 = StringVar() # string variable used for the score tracker
+        self.v2 = StringVar() # string for the level counter
         self.point_track = 0 # int variable used to track points
+        self.level_track = 1
         self.life_track = 3 # number of lives at the start
 
         canv_width = columns * size # sets the width of the board default 6*96
@@ -63,38 +66,42 @@ class DinoFrame(Frame):
         Frame.__init__(self, master) # initializes the frame
 
         # setting all the buttons for the select menu
-        select1 = Select_Menu(self, '', height=100, width=300)
+        self.select1 = Select_Menu(self, '', height=100, width=300)
         # setting the button commands to the functions below
-        select1.callback1 = self.callback1
-        select1.callback2 = self.callback2
-        select1.callback3 = self.callback3
-        select1.callback4 = self.callback4
-        select1.callback5 = self.callback5
-        select1.place(x=0, y=50, relwidth=1, relheight=1)
-        select1.lift # sets the select menu as the top layer on Frame
+        self.select1.callback1 = self.callback1
+        self.select1.callback2 = self.callback2
+        self.select1.callback3 = self.callback3
+        self.select1.callback4 = self.callback4
+        self.select1.callback5 = self.callback5
+        self.select1.place(x=0, y=50, relwidth=1, relheight=1)
+        self.select1.lift # sets the select menu as the top layer on Frame
 
         # Canvas is a widget in Tkinter, in which you can draw
         self.canvas = Canvas(self, borderwidth=0, highlightthickness=0,
                                 width=canv_width, height=canv_height, background="white")
 
         # creates the label first so it is at the top
-        label1 = Label(master,justify="c", textvariable=self.v,
+        operation_label = Label(master,justify="c", textvariable=self.v,
                        font=("TkHeadingFont", "16"), pady=10).pack({"side": "top"})
         self.v.set("Select an Operation")
 
-        label2 = Label(master, justify='c', textvariable=self.v1).pack({'side':'top'})
-        self.v1.set('Score: 0')
+        self.score_label = Label(master, justify='c', textvariable=self.v1).pack({'side':'top'})
+        self.v1.set('Score: '+ str(self.point_track))
+
+        self.level_label = Label(master, justify='c', textvariable=self.v2).pack({'side':'top'})
+        self.v2.set('Level: '+str(self.level_track))
 
         # pack method from Tkinter automatically stakes care of coordinate information
         self.canvas.pack(side="top", fill="both", expand=True, padx=2, pady=2)
 
         # binds self.refresh to the configure event
+        # actually initializes the checkered board
         self.canvas.bind("<Configure>", self.refresh)
 
         # initialize widgets
         self.createWidgets()
 
-        # initialize the life counter
+        # initialize the life counter label in bottom right
         self.rex_lives()
 
     # Definitions for the operation selection (callback functions)
@@ -197,14 +204,47 @@ class DinoFrame(Frame):
         elif self.life_track <= 0:
             imgstr = "rex_lives0.gif"
             self.v1.set("Game Over , Your Score:" + str(self.point_track))
+            #self.canvas.delete("square")
+            self.canvas.delete("piece")
+            self.canvas.delete("the_text")
+            #self.canvas.create_text(96*3,96, font =("Times", "24", "bold"), text="Game Over")
+            #self.canvas.create_text(96*3,128, font =("Times", "18", "bold"), text="game will restart")
+
+            sleep(2)
+            self.restart_game()
+
         self.lives_image = PhotoImage(file=imgstr)
         self.LIVES['image'] = self.lives_image
         self.LIVES.pack({'side':'right'})
 
-        # function print_coord widget command
+    def restart_game(self):
+        player1 = "rex_skull2.gif"
+        self.piece("player1",player1,0,0)
+        self.select1.lift()
+
+        del self.number_marker
+        self.number_marker = []
+        del self.drawn_number
+        self.drawn_number = []
+        self.op_number = 0 # the comparative number
+        self.op_type = '' # the type of comparison operation
+
+        self.point_track = 0 # int variable used to track points
+        self.level_track = 1
+        self.life_track = 3 # number of lives at the start
+        self.QUIT.lift
+        self.hi_there.lift
+        # self.score_label.lift # gives error 'NoneType' object has no attribute 'lift'
+        # self.level_label.lift
+        #self.refresh()
+        self.LIVES.destroy()
+        self.rex_lives() # re-do the image for lives
+
+    # function print_coord widget command
     def print_numbers(self):
         print self.drawn_number
         print self.number_marker
+        print self.pieces["player1"]
 
     # function to put the image of the piece on the board
     def piece(self, name, image, row=0, column=0):
@@ -237,7 +277,7 @@ class DinoFrame(Frame):
                 text1 = drawn_number[counter]
                 self.canvas.create_text(x1,y1, font =("Times", "24", "bold"), text=text1, tags="the_text")
 
-    # draws the board
+    # initializes the checkered board and
     def refresh(self, event):
         xsize = int((event.width-1) / self.columns)
         ysize = int((event.height-1) / self.rows)
@@ -261,6 +301,7 @@ class DinoFrame(Frame):
 
             self.canvas.tag_raise("piece") # tag raise makes "piece" the top layer
             self.canvas.tag_lower("square")
+
 
     #controls
     # these events will move the player 96 pixels by default
@@ -301,26 +342,38 @@ class DinoFrame(Frame):
 
         # a reminder that numbers_entry is 0:29 (space location on board)
         # drawn_numbers is the list of the numbers that are being drawn on the board
-        if self.drawn_number[numbers_entry] == '': # the the drawn_number at that point is blank
+        if self.drawn_number[numbers_entry] == '': # the drawn_number at that point is blank
             # do nothing
             print "no entry"
-        elif self.number_marker[numbers_entry] == 1:
+        elif self.number_marker[numbers_entry] == 1: # the drawn_number at the point satisfies the operation
             if self.life_track <= 0:
-                pass
+                pass # do nothing
             else:
                 self.point_track += 10
                 self.v1.set("Score: " +str(self.point_track))
                 print "congrats" + "you now have " + str(self.point_track) + " points"
                 self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
                 self.number_marker[numbers_entry] = 0
+                if 1 in self.number_marker:
+                    pass
+                else:
+                    print "you win"
+                    self.level_track += 1
+                    self.restart_game()
+            self.shownumber(self.drawn_number)
         else:
             print "wrong"
             self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
-            self.number_marker[numbers_entry] = 0
+            self.number_marker[numbers_entry] = 0 # make the numbers_marker 0
             self.life_track -= 1 # subtract a life from the life counter
             self.LIVES.destroy()
             self.rex_lives() # re-do the image for lives
-        self.shownumber(self.drawn_number) # runs the shownumber method with new list
+            if self.life_track > 0:
+                self.shownumber(self.drawn_number) # runs the shownumber method with new list
+            else:
+                pass
+
+
 
 # end of DinoFrame
 
@@ -336,8 +389,6 @@ def main():
     # calling the piece method and initializes player1
     player1 = "rex_skull2.gif" # sets the variable to a string
     app.piece("player1",player1,0,0) # calls the piece method arguments are (name, image, row, column)
-
-    #testing
 
     # key bindings
     root.bind('<Escape>', lambda e: root.quit()) # lambda allows you to write user input functions

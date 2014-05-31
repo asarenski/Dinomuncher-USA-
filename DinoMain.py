@@ -205,8 +205,6 @@ class DinoFrame(Frame):
             imgstr = "rex_lives0.gif"
             self.v1.set("Game Over , Your Score:" + str(self.point_track))
             #self.canvas.delete("square")
-            self.canvas.delete("piece")
-            self.canvas.delete("the_text")
             #self.canvas.create_text(96*3,96, font =("Times", "24", "bold"), text="Game Over")
             #self.canvas.create_text(96*3,128, font =("Times", "18", "bold"), text="game will restart")
             self.restart_game()
@@ -216,6 +214,9 @@ class DinoFrame(Frame):
         self.LIVES.pack({'side':'right'})
 
     def restart_game(self):
+        self.canvas.delete("piece")
+        self.canvas.delete("the_text")
+
         player1 = "rex_skull2.gif"
         self.piece("player1",player1,0,0)
         self.select1.lift()
@@ -245,6 +246,7 @@ class DinoFrame(Frame):
         player1 = "rex_skull2.gif"
         self.piece("player1",player1,0,0)
         self.select1.lift
+        self.level_track += 1
 
         del self.number_marker
         self.number_marker = []
@@ -252,7 +254,7 @@ class DinoFrame(Frame):
         self.drawn_number = []
         self.op_number = 0 # the comparative number
 
-        if self.op_type == "Mutliples":
+        if self.op_type == "Multiples":
             self.callback1()
         if self.op_type == "Multiplication":
             self.callback2()
@@ -379,7 +381,6 @@ class DinoFrame(Frame):
                     self.shownumber(self.drawn_number)
                 else:
                     print "you win"
-                    self.level_track += 1
                     self.half_restart_game() # needs to be a half restart
         else:
             print "wrong"

@@ -85,10 +85,10 @@ class DinoFrame(Frame):
                        font=("TkHeadingFont", "16"), pady=10).pack({"side": "top"})
         self.v.set("Select an Operation")
 
-        self.score_label = Label(master, justify='c', textvariable=self.v1).pack({'side':'top'})
+        score_label = Label(self, justify='c', textvariable=self.v1).pack({'side':'top'})
         self.v1.set('Score: '+ str(self.point_track))
 
-        self.level_label = Label(master, justify='c', textvariable=self.v2).pack({'side':'top'})
+        level_label = Label(self, justify='c', textvariable=self.v2).pack({'side':'top'})
         self.v2.set('Level: '+str(self.level_track))
 
         # pack method from Tkinter automatically stakes care of coordinate information
@@ -100,9 +100,6 @@ class DinoFrame(Frame):
 
         # initialize widgets
         self.createWidgets()
-
-        # initialize the life counter label in bottom right
-        self.rex_lives()
 
     # Definitions for the operation selection (callback functions)
     # these unpack the num_dict and turn it into useful lists
@@ -122,6 +119,9 @@ class DinoFrame(Frame):
         self.op_number = xtuple[2]
         self.shownumber(self.drawn_number) # inputs num_list to show numbers on board
         self.v.set(self.op_type + " of " + str(self.op_number))
+        self.v1.set('Score: '+ str(self.point_track))
+        self.v2.set('Level: '+str(self.level_track))
+        self.rex_lives()
 
     def callback2(self):
         self.op_type = "Multiplication"
@@ -135,6 +135,9 @@ class DinoFrame(Frame):
         self.op_number = xtuple[2]
         self.shownumber(self.drawn_number)
         self.v.set("Equals " + str(self.op_number))
+        self.v1.set('Score: '+ str(self.point_track))
+        self.v2.set('Level: '+str(self.level_track))
+        self.rex_lives()
 
     def callback3(self):
         self.op_type = "Division"
@@ -148,6 +151,9 @@ class DinoFrame(Frame):
         self.op_number = xtuple[2]
         self.shownumber(self.drawn_number)
         self.v.set("Equals " + str(self.op_number))
+        self.v1.set('Score: '+ str(self.point_track))
+        self.v2.set('Level: '+str(self.level_track))
+        self.rex_lives()
 
     def callback4(self):
         self.op_type = "Addition"
@@ -161,6 +167,9 @@ class DinoFrame(Frame):
         self.op_number = xtuple[2]
         self.shownumber(self.drawn_number)
         self.v.set("Equals " + str(self.op_number))
+        self.v1.set('Score: '+ str(self.point_track))
+        self.v2.set('Level: '+str(self.level_track))
+        self.rex_lives()
 
     def callback5(self):
         self.op_type = "Subtraction"
@@ -174,6 +183,9 @@ class DinoFrame(Frame):
         self.op_number = xtuple[2]
         self.shownumber(self.drawn_number)
         self.v.set("Equals " + str(self.op_number))
+        self.v1.set('Score: '+ str(self.point_track))
+        self.v2.set('Level: '+str(self.level_track))
+        self.rex_lives()
 
     # function for pushbutton widgets
     def createWidgets(self):
@@ -192,9 +204,23 @@ class DinoFrame(Frame):
         self.hi_there["command"] = self.print_numbers
         self.hi_there.pack({"side": "left"})
 
+        # intial player lives
+        self.LIVES = Label(self)
+        imgstr = "rex_lives3.gif"
+        self.lives_image = PhotoImage(file=imgstr)
+        self.LIVES['image'] = self.lives_image
+        self.LIVES.pack({'side':'right'})
+
+
+        # restart button
+        self.restart_button = Button(self)
+        self.restart_button['text'] = "Restart"
+        self.restart_button["command"] = self.restart_game
+        self.restart_button.pack({"side": "left"})
+
+
     def rex_lives(self):
         #lives label
-        self.LIVES = Label(self)
         if self.life_track == 3:
             imgstr = "rex_lives3.gif"
         elif self.life_track == 2:
@@ -203,15 +229,9 @@ class DinoFrame(Frame):
             imgstr = "rex_lives1.gif"
         elif self.life_track <= 0:
             imgstr = "rex_lives0.gif"
-            self.v1.set("Game Over , Your Score:" + str(self.point_track))
-            #self.canvas.delete("square")
-            #self.canvas.create_text(96*3,96, font =("Times", "24", "bold"), text="Game Over")
-            #self.canvas.create_text(96*3,128, font =("Times", "18", "bold"), text="game will restart")
             self.restart_game()
-
         self.lives_image = PhotoImage(file=imgstr)
         self.LIVES['image'] = self.lives_image
-        self.LIVES.pack({'side':'right'})
 
     def restart_game(self):
         self.canvas.delete("piece")
@@ -220,6 +240,10 @@ class DinoFrame(Frame):
         player1 = "rex_skull2.gif"
         self.piece("player1",player1,0,0)
         self.select1.lift()
+
+        self.v.set("Game Over , Your Score: " + str(self.point_track) + ", Max Level: " + str(self.level_track))
+        #self.level_label.lift() #gives error NoneType object has no attribute 'lift'
+        #self.score_label.lift()
 
         del self.number_marker
         self.number_marker = []
@@ -233,10 +257,6 @@ class DinoFrame(Frame):
         self.life_track = 3 # number of lives at the start
         self.QUIT.lift
         self.hi_there.lift
-        # self.score_label.lift # gives error 'NoneType' object has no attribute 'lift'
-        # self.level_label.lift
-        #self.refresh()
-        self.LIVES.destroy()
         self.rex_lives() # re-do the image for lives
 
     def half_restart_game(self):
@@ -385,9 +405,7 @@ class DinoFrame(Frame):
         else:
             print "wrong"
             self.life_track -= 1 # subtract a life from the life counter
-            self.LIVES.destroy()
-            self.rex_lives() # re-do the image for lives
-            print self.life_track
+            self.rex_lives() # re-do the image for lives and check for game-over
             if self.life_track > 0:
                 self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
                 self.number_marker[numbers_entry] = 0 # make the numbers_marker 0

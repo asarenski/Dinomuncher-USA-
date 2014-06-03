@@ -37,7 +37,6 @@ class Select_Menu(Frame):
         button5 = Button(self, text="Subtraction", font=('Comic Sans MS', 20),command=lambda: self.callback5())
         button5.pack(side="top", pady = 20)
 
-
 class DinoFrame(Frame):
     def __init__(self, master=None, rows=5, columns=6, size=96, color1='old lace', color2="pale turquoise"):
         """Initializes the main frame with game-board."""
@@ -490,18 +489,51 @@ class DinoFrame(Frame):
 
     #currently a test area for implementing a meteor
     def test_area(self):
-        '''Currently this stuff only works with multiples'''
+        '''Currently this stuff only works with multiples operation'''
         if self.level_track > 0:
             self.meteor()
         else:
             pass
     def meteor(self):
+        ''' Creates the flashing circles indicating a meteor is coming.
+        It then lowers the circles so they can't be seen.
+        After this is done it calls the flash method.
+        '''
         def circle(self,name,x,y,r,fill,state):
             self.canvas.create_oval(x-r,y-r,x+r,y+r, fill=fill,state=state, tags=(name,"circle"))
         meteor = circle(self,"one", 142,48,40,"blue","normal")
         self.canvas.lower('one')
         self.after(3000,self.flash)
     def flash(self):
+        '''Calls the Flash class'''
+        flash = Flash(self.canvas)
+        self.after(300, self.flash1)
+    def flash1(self):
+        flash = Flash(self.canvas)
+        self.after(300, self.flash2)
+    def flash2(self):
+        flash = Flash(self.canvas)
+        self.after(300, self.flash3)
+    def flash3(self):
+        flash = Flash(self.canvas)
+        self.after(300, self.flash4)
+    def flash4(self):
+        flash = Flash(self.canvas)
+        self.after(300, self.flash5)
+    def flash5(self):
+        flash = Flash(self.canvas)
+        self.after(300, self.flash6)
+    def flash6(self):
+        flash = Flash(self.canvas)
+
+class Flash():
+    def __init__(self,canvas):
+        '''Used for when the meteor will hit'''
+        self.canvas = canvas
+        self.flash_main()
+
+    def flash_main(self):
+        '''Flashes where the meteor will hit'''
         self.canvas.lift('one')
         current_state = self.canvas.itemcget('one','state')
         if current_state == "normal":
@@ -518,8 +550,6 @@ class DinoFrame(Frame):
         else:
             self.canvas.itemconfigure('one', fill="red")
         current_color = self.canvas.itemcget('one','fill')
-        print current_color
-        self.after(300, self.flash)
 
 def main():
     """Initializes the root, creates the tk, and starts the game."""

@@ -14,6 +14,7 @@ from MathFile import math_main
 
 class Select_Menu(Frame):
     def __init__(self, master, text, height, width, *args, **kwargs):
+
         """Initializes the selection menu for operation choice"""
         self.height = height
         self.width = width
@@ -137,6 +138,8 @@ class DinoFrame(Frame):
         self.v1.set('Score: '+ str(self.point_track))
         self.v2.set('Level: '+str(self.level_track))
         self.rex_lives()
+        #testing the test area
+        self.test_area()
 
     def callback2(self):
         """ Definitions for the operation selection (callback functions) see docstring in callback1"""
@@ -232,7 +235,6 @@ class DinoFrame(Frame):
         self.lives_image = PhotoImage(file=imgstr)
         self.LIVES['image'] = self.lives_image
         self.LIVES.pack({'side':'right'})
-
 
         # restart button
         self.restart_button = Button(self)
@@ -485,6 +487,39 @@ class DinoFrame(Frame):
                 self.shownumber(self.drawn_number)
             else:
                 pass
+
+    #currently a test area for implementing a meteor
+    def test_area(self):
+        '''Currently this stuff only works with multiples'''
+        if self.level_track > 0:
+            self.meteor()
+        else:
+            pass
+    def meteor(self):
+        def circle(self,name,x,y,r,fill,state):
+            self.canvas.create_oval(x-r,y-r,x+r,y+r, fill=fill,state=state, tags=(name,"circle"))
+        meteor = circle(self,"one", 142,48,40,"blue","normal")
+        self.canvas.lower('one')
+        self.after(3000,self.flash)
+    def flash(self):
+        self.canvas.lift('one')
+        current_state = self.canvas.itemcget('one','state')
+        if current_state == "normal":
+            new_state = "hidden"
+            self.canvas.itemconfigure('one',state=new_state)
+        else:
+            self.canvas.itemconfigure('one',state='normal')
+        print current_state
+
+        current_color = self.canvas.itemcget('one','fill')
+        if current_color == "red":
+            new_color = "blue"
+            self.canvas.itemconfigure('one', fill=new_color)
+        else:
+            self.canvas.itemconfigure('one', fill="red")
+        current_color = self.canvas.itemcget('one','fill')
+        print current_color
+        self.after(300, self.flash)
 
 def main():
     """Initializes the root, creates the tk, and starts the game."""

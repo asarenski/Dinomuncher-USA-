@@ -39,7 +39,7 @@ class Select_Menu(Frame):
 
 class DinoFrame(Frame):
     def __init__(self, master=None, rows=5, columns=6, size=96, color1='old lace', color2="pale turquoise"):
-        """Initializes the main frame with gameboard."""
+        """Initializes the main frame with game-board."""
 
         # initialize variables
         # initially used for self.refresh, which is the checker board
@@ -52,7 +52,7 @@ class DinoFrame(Frame):
         # a dictionary for any pieces on the game board
         self.pieces = {}
 
-        # variables used intially by the callbacks and drawing the numbers
+        # variables used initially by the callbacks and drawing the numbers
         # number marker for right or wrong answer
         self.number_marker = []
         # number list used to draw
@@ -93,13 +93,8 @@ class DinoFrame(Frame):
         # sets the select menu as the top layer on Frame
         self.select1.lift
 
-        # Canvas is a widget in Tkinter, in which you can draw
-        self.canvas = Canvas(self, borderwidth=0, highlightthickness=0,
-                                width=canv_width, height=canv_height, background="white")
-
-        # creates the label first so it is at the top
         operation_label = Label(master,justify="c", textvariable=self.v,
-                       font=("TkHeadingFont", "16"), pady=10).pack({"side": "top"})
+                                font=("TkHeadingFont", "16"), pady=10).pack({"side": "top"})
         self.v.set("Select an Operation")
 
         score_label = Label(self, justify='c', textvariable=self.v1).pack({'side':'top'})
@@ -108,11 +103,12 @@ class DinoFrame(Frame):
         level_label = Label(self, justify='c', textvariable=self.v2).pack({'side':'top'})
         self.v2.set('Level: '+str(self.level_track))
 
-        # pack method from Tkinter automatically stakes care of coordinate information
+        # Canvas is a widget in Tkinter, in which you can draw
+        self.canvas = Canvas(self, borderwidth=0, highlightthickness=0,
+                             width=canv_width, height=canv_height, background="white")
         self.canvas.pack(side="top", fill="both", expand=True, padx=2, pady=2)
 
-        # binds self.refresh to the configure event
-        # actually initializes the checkered board
+        # initializes the checkered board with self.refresh
         self.canvas.bind("<Configure>", self.refresh)
 
         # initialize widgets
@@ -212,6 +208,7 @@ class DinoFrame(Frame):
 
     # function for pushbutton widgets
     def createWidgets(self):
+        """Function for the pushbutton widgets"""
 
         # quit button
         self.QUIT = Button(self)
@@ -242,7 +239,6 @@ class DinoFrame(Frame):
         self.restart_button['text'] = "Restart"
         self.restart_button["command"] = self.restart_game
         self.restart_button.pack({"side": "left"})
-
 
     def rex_lives(self):
         """ Lives Tkinter label."""
@@ -361,7 +357,11 @@ class DinoFrame(Frame):
                 self.canvas.create_text(x1,y1, font =("Times", "24", "bold"), text=text1, tags="the_text")
 
     def refresh(self, event):
-        """ Initializes the checkered board."""
+        """ Initializes the checkered board.
+        The way this function is written allows it to be modified for a configurable window
+        such as in the event of resizing the window. Currently resizing has been disabled in
+        the main function.
+        """
         xsize = int((event.width-1) / self.columns)
         ysize = int((event.height-1) / self.rows)
         self.size = min(xsize, ysize)

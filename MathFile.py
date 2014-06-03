@@ -1,5 +1,7 @@
 '''
-For Dinomuncher USA!
+Dinomuncher USA!
+MathFile.py written by: Adam Sarenski
+05/2014
 
 This file holds all the math stuff as well as the number generation.
 '''
@@ -176,7 +178,8 @@ class Subtraction(Mathfile):
         self.shuffle_the_list()
         self.create_dict()
 
-def math_main(op_type): #note that op_type must be a string to work
+def math_main(op_type):
+    #note that op_type must be a string to work
     op_type = op_type
     # selection for Multiples operation
     if op_type == "Multiples":
@@ -194,10 +197,9 @@ def math_main(op_type): #note that op_type must be a string to work
 
     op_instance.create_list()
     num_list = op_instance.num_list
-    num_list2 = op_instance.num_list2 # sets op_number equal to the one in the Multiples instance
+    num_list2 = op_instance.num_list2
     op_number = op_instance.op_number
     number_marker = op_instance.number_marker
     num_dict = op_instance.num_dict
 
-    #print num_dict
-    return (num_dict) # returns the entire num_dict
+    return (num_dict)

@@ -1,16 +1,20 @@
-__author__ = 'adam'
-'''making a new'''
 '''
 Dinomuncher USA!
+DinoMain.py written by: Adam Sarenski
+05/2014
+
+The main file creates tkinter frames. It also initializes the program for play.
+This file requires the input of MathFile.py to work.
 '''
 
-from Tkinter import * # tkinter is a GUI writing module that can also be used to write games
+# tkinter is a GUI writing module that can also be used to write games
+from Tkinter import *
 from MathFile import math_main
-from time import sleep
 
 
 class Select_Menu(Frame):
     def __init__(self, master, text, height, width, *args, **kwargs):
+        """Initializes the selection menu for operation choice"""
         self.height = height
         self.width = width
 
@@ -35,7 +39,7 @@ class Select_Menu(Frame):
 
 class DinoFrame(Frame):
     def __init__(self, master=None, rows=5, columns=6, size=96, color1='old lace', color2="pale turquoise"):
-        # size is the size of a square in pixels
+        """Initializes the main frame with gameboard."""
 
         # initialize variables
         # initially used for self.refresh, which is the checker board
@@ -45,25 +49,37 @@ class DinoFrame(Frame):
         self.color1 = color1
         self.color2 = color2
 
-        self.pieces = {} # a dictionary for any pieces on the game board
+        # a dictionary for any pieces on the game board
+        self.pieces = {}
 
         # variables used intially by the callbacks and drawing the numbers
-        self.number_marker = [] # number marker for right or wrong answer
-        self.drawn_number = [] # number list used to draw
-        self.op_number = 0 # the comparative number
-        self.op_type = '' # the type of comparison operation
+        # number marker for right or wrong answer
+        self.number_marker = []
+        # number list used to draw
+        self.drawn_number = []
+        # the comparative number
+        self.op_number = 0
+        # the type of comparison operation
+        self.op_type = ''
 
-        self.v = StringVar() # string variable for label for operation
-        self.v1 = StringVar() # string variable used for the score tracker
-        self.v2 = StringVar() # string for the level counter
-        self.point_track = 0 # int variable used to track points
+        # string variable for label for operation
+        self.v = StringVar()
+        # string variable used for the score tracker
+        self.v1 = StringVar()
+        # string for the level counter
+        self.v2 = StringVar()
+        # int variable used to track points
+        self.point_track = 0
         self.level_track = 1
-        self.life_track = 3 # number of lives at the start
+        # number of lives at the start
+        self.life_track = 3
 
-        canv_width = columns * size # sets the width of the board default 6*96
+        # sets the width of the board default 6*96
+        canv_width = columns * size
         canv_height = rows * size
 
-        Frame.__init__(self, master) # initializes the frame
+        # initializes the frame
+        Frame.__init__(self, master)
 
         # setting all the buttons for the select menu
         self.select1 = Select_Menu(self, '', height=100, width=300)
@@ -74,7 +90,8 @@ class DinoFrame(Frame):
         self.select1.callback4 = self.callback4
         self.select1.callback5 = self.callback5
         self.select1.place(x=0, y=50, relwidth=1, relheight=1)
-        self.select1.lift # sets the select menu as the top layer on Frame
+        # sets the select menu as the top layer on Frame
+        self.select1.lift
 
         # Canvas is a widget in Tkinter, in which you can draw
         self.canvas = Canvas(self, borderwidth=0, highlightthickness=0,
@@ -101,32 +118,35 @@ class DinoFrame(Frame):
         # initialize widgets
         self.createWidgets()
 
-    # Definitions for the operation selection (callback functions)
-    # these unpack the num_dict and turn it into useful lists
     def callback1(self):
+        """ Definitions for the operation selection (callback functions)
+        these unpack the num_dict and turn it into useful lists via for loop.
+        xtuple is then used to create the drawn_number list and the number_marker_list
+        the third value of xtuple is taken as a True or False for solving the operation requirement
+        """
         self.op_type = "Multiples"
         self.lift()
-        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+        # pulls num_dict from math_main and sets as math_dict
+        math_dict = math_main(self.op_type)
 
-        # unpacks the num_dict into xtuple
-        # xtuple is then used to create the drawn_number list and the number_marker_list
-        # the third value of xtuple is taken as a True or False for solving the operation requirement
         for i in range (30):
             xtuple = ()
             xtuple = math_dict[i]
             self.drawn_number.append(xtuple[0])
             self.number_marker.append(xtuple[3])
         self.op_number = xtuple[2]
-        self.shownumber(self.drawn_number) # inputs num_list to show numbers on board
+        # inputs num_list to show numbers on board
+        self.shownumber(self.drawn_number)
         self.v.set(self.op_type + " of " + str(self.op_number))
         self.v1.set('Score: '+ str(self.point_track))
         self.v2.set('Level: '+str(self.level_track))
         self.rex_lives()
 
     def callback2(self):
+        """ Definitions for the operation selection (callback functions) see docstring in callback1"""
         self.op_type = "Multiplication"
         self.lift()
-        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+        math_dict = math_main(self.op_type)
         for i in range (30):
             xtuple = ()
             xtuple = math_dict[i]
@@ -140,9 +160,10 @@ class DinoFrame(Frame):
         self.rex_lives()
 
     def callback3(self):
+        """ Definitions for the operation selection (callback functions) see docstring in callback1"""
         self.op_type = "Division"
         self.lift()
-        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+        math_dict = math_main(self.op_type)
         for i in range (30):
             xtuple = ()
             xtuple = math_dict[i]
@@ -156,9 +177,10 @@ class DinoFrame(Frame):
         self.rex_lives()
 
     def callback4(self):
+        """ Definitions for the operation selection (callback functions) see docstring in callback1"""
         self.op_type = "Addition"
         self.lift()
-        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+        math_dict = math_main(self.op_type)
         for i in range (30):
             xtuple = ()
             xtuple = math_dict[i]
@@ -172,9 +194,10 @@ class DinoFrame(Frame):
         self.rex_lives()
 
     def callback5(self):
+        """ Definitions for the operation selection (callback functions) see docstring in callback1"""
         self.op_type = "Subtraction"
         self.lift()
-        math_dict = math_main(self.op_type) # pulls num_dict from math_main and sets as math_dict
+        math_dict = math_main(self.op_type)
         for i in range (30):
             xtuple = ()
             xtuple = math_dict[i]
@@ -193,8 +216,10 @@ class DinoFrame(Frame):
         # quit button
         self.QUIT = Button(self)
         self.QUIT["text"] = "QUIT"
-        self.QUIT["fg"]   = "red"  # foreground
-        self.QUIT["bg"]   = "blue" # background
+        # foreground
+        self.QUIT["fg"]   = "red"
+        # background
+        self.QUIT["bg"]   = "blue"
         self.QUIT["command"] =  self.quit
         self.QUIT.pack({"side": "left"})
 
@@ -220,7 +245,7 @@ class DinoFrame(Frame):
 
 
     def rex_lives(self):
-        #lives label
+        """ Lives Tkinter label."""
         if self.life_track == 3:
             imgstr = "rex_lives3.gif"
         elif self.life_track == 2:
@@ -234,6 +259,9 @@ class DinoFrame(Frame):
         self.LIVES['image'] = self.lives_image
 
     def restart_game(self):
+        """Function used if the player runs out of lives.
+        Brings the player back to the select menu.
+        """
         self.canvas.delete("piece")
         self.canvas.delete("the_text")
 
@@ -242,24 +270,30 @@ class DinoFrame(Frame):
         self.select1.lift()
 
         self.v.set("Game Over , Your Score: " + str(self.point_track) + ", Max Level: " + str(self.level_track))
-        #self.level_label.lift() #gives error NoneType object has no attribute 'lift'
-        #self.score_label.lift()
 
         del self.number_marker
         self.number_marker = []
         del self.drawn_number
         self.drawn_number = []
-        self.op_number = 0 # the comparative number
-        self.op_type = '' # the type of comparison operation
+        # the comparative number
+        self.op_number = 0
+        # the type of comparison operation
+        self.op_type = ''
 
-        self.point_track = 0 # int variable used to track points
+        # int variable used to track points
+        self.point_track = 0
         self.level_track = 1
-        self.life_track = 3 # number of lives at the start
+        # number of lives at the start
+        self.life_track = 3
         self.QUIT.lift
         self.hi_there.lift
-        self.rex_lives() # re-do the image for lives
+        # re-do the image for lives
+        self.rex_lives()
 
     def half_restart_game(self):
+        """Function used if the player beats the level.
+        Restarts the game using the same initial operation selection.
+        """
         self.canvas.delete("piece")
         self.canvas.delete("the_text")
 
@@ -272,7 +306,8 @@ class DinoFrame(Frame):
         self.number_marker = []
         del self.drawn_number
         self.drawn_number = []
-        self.op_number = 0 # the comparative number
+        # the comparative number
+        self.op_number = 0
 
         if self.op_type == "Multiples":
             self.callback1()
@@ -285,30 +320,35 @@ class DinoFrame(Frame):
         if self.op_type == "Subtraction":
             self.callback5()
 
-    # function print_coord widget command
     def print_numbers(self):
+        """print_coord widgest command"""
         print self.drawn_number
         print self.number_marker
         print self.pieces["player1"]
 
-    # function to put the image of the piece on the board
     def piece(self, name, image, row=0, column=0):
-    # Also calls placepiece, which puts it in the pieces dictionary.
-        self.image = PhotoImage(file=image) # takes the string of the .gif
-        self.canvas.create_image(0,0, image = self.image, tags=(name, "piece"), anchor="c") # c for center
-        self.placepiece(name, row, column) # calls the placepiece function, which places it in coordinates
+        """Puts the image of the piece on the board.
+        Also calls placepiece, which puts it in the pieces dictionary.
+        """
+        # takes the string of the .gif
+        self.image = PhotoImage(file=image)
+        # canvas 'c' is for center
+        self.canvas.create_image(0,0, image = self.image, tags=(name, "piece"), anchor="c")
+        # calls the placepiece function, which places it in coordinates
+        self.placepiece(name, row, column)
 
-    # function to track coordinates for piece in dictionary 'pieces'
     def placepiece(self, name, row, column):
-        self.pieces[name] = [row, column] #create a row, column list.. in previous code this was tuple
-        # technically x0 should be using column. instead just imagine for the coordinate system
-        # that the row just means x_i . This is so that it plays nicely with refresh event for board
+        """function to track coordinates for piece in dictionary 'pieces'
+        Technically x0 should be using column. Instead just imagine for the coordinate system
+        that the row just means x_i . This is so that it plays nicely with refresh event for board
+        """
+        self.pieces[name] = [row, column]
         x0 = (row * self.size) + int(self.size/2)
         y0 = (column * self.size) + int(self.size/2)
         self.canvas.coords(name, x0, y0)
 
-    # function to draw the numbers on the board
     def shownumber(self, drawn_number):
+        """function to draw the numbers on the board"""
         self.drawn_number = drawn_number
         self.canvas.delete("the_text")
 
@@ -320,8 +360,8 @@ class DinoFrame(Frame):
                 text1 = drawn_number[col+row*self.columns]
                 self.canvas.create_text(x1,y1, font =("Times", "24", "bold"), text=text1, tags="the_text")
 
-    # initializes the checkered board and
     def refresh(self, event):
+        """ Initializes the checkered board."""
         xsize = int((event.width-1) / self.columns)
         ysize = int((event.height-1) / self.rows)
         self.size = min(xsize, ysize)
@@ -329,7 +369,8 @@ class DinoFrame(Frame):
         color = self.color2
         for row in range(self.rows):
             color = self.color1 if color == self.color2 else self.color2
-            for col in range(self.columns): # this part does the actual resizing
+            # this part does the actual resizing
+            for col in range(self.columns):
                 x1 = (col * self.size)
                 y1 = (row * self.size)
                 x2 = x1 + self.size
@@ -339,23 +380,32 @@ class DinoFrame(Frame):
 
         # need to do the same thing with the numbers that we put on the board
         for name in self.pieces:
-            self.placepiece(name, self.pieces[name][0], self.pieces[name][1])
             # places the piece back where it was on the canvas after the redraw
+            self.placepiece(name, self.pieces[name][0], self.pieces[name][1])
 
-            self.canvas.tag_raise("piece") # tag raise makes "piece" the top layer
+            # raise and lower are like lift for tkinter
+            self.canvas.tag_raise("piece")
             self.canvas.tag_lower("square")
 
-
-    #controls
-    # these events will move the player 96 pixels by default
     def leftkey(self,event):
-        if self.pieces['player1'][0]== 0: # goes into the pieces dictionary and pulls the coord list to check
+        """Controls
+        these events will move the player 96 pixels by default.
+        leftkey moves the player left.
+        """
+        # goes into the pieces dictionary and pulls the coord list to check
+        if self.pieces['player1'][0]== 0:
             print "cannot move past border"
         else:
-            self.canvas.move('player1', -1*self.size, 0) # moves the player 1 space over, which is 96 pixels
-            self.pieces['player1'][0] = self.pieces['player1'][0]-1 # changes the coordinate system
+            # moves the player 1 space over, which is 96 pixels
+            self.canvas.move('player1', -1*self.size, 0)
+            # changes the coordinate system
+            self.pieces['player1'][0] = self.pieces['player1'][0]-1
 
-    def rightkey(self,event): # remember self.columns was set at __init__
+    def rightkey(self,event):
+        """Controls
+        these events will move the player 96 pixels by default.
+        leftkey moves the player right.
+        """
         if self.pieces['player1'][0]== self.columns-1:
             print "cannot move past border"
         else:
@@ -363,13 +413,21 @@ class DinoFrame(Frame):
             self.pieces['player1'][0] = self.pieces['player1'][0]+1
 
     def upkey(self,event):
+        """Controls
+        these events will move the player 96 pixels by default.
+        leftkey moves the player up.
+        """
         if self.pieces['player1'][1]== 0:
             print "cannot move past border"
         else:
             self.canvas.move('player1', 0, -1*self.size)
             self.pieces['player1'][1] = self.pieces['player1'][1]-1
 
-    def downkey(self,event): #remember self.rows was set at __init__
+    def downkey(self,event):
+        """Controls
+        these events will move the player 96 pixels by default.
+        leftkey moves the player down.
+        """
         if self.pieces['player1'][1]== self.rows-1:
             print "cannot move past border"
         else:
@@ -377,67 +435,84 @@ class DinoFrame(Frame):
             self.pieces['player1'][1] = self.pieces['player1'][1]+1
 
     def spacebar(self,event):
-        x0 = self.pieces['player1'][0] # x var of coords
-        y0 = self.pieces['player1'][1] # y var of coords
+        """Spacebar is the main event control for the player. It will test the
+        entry and regulates the delivery of feedback to the player.
+        """
+        # x-variable for the player's location
+        x0 = self.pieces['player1'][0]
+        # y-variable for the player's location
+        y0 = self.pieces['player1'][1]
 
-        numbers_entry = x0 + y0*self.columns # this is the translation to 0:29 for numbers dictionary
+        # this is the translation to 0:29 for numbers dictionary
+        numbers_entry = x0 + y0*self.columns
         print "space hit"
 
-        # a reminder that numbers_entry is 0:29 (space location on board)
-        # drawn_numbers is the list of the numbers that are being drawn on the board
-        if self.drawn_number[numbers_entry] == '': # the drawn_number at that point is blank
+        #a reminder that numbers_entry is 0:29 (space location on board)
+        #drawn_numbers is the list of the numbers that are being drawn on the board
+        if self.drawn_number[numbers_entry] == '':
             # do nothing
             print "no entry"
-        elif self.number_marker[numbers_entry] == 1: # the drawn_number at the point satisfies the operation
+        # the drawn_number at the point satisfies the operation
+        elif self.number_marker[numbers_entry] == 1:
             if self.life_track <= 0:
-                pass # do nothing
+                # do nothing
+                pass
             else:
                 self.point_track += 10
                 self.v1.set("Score: " +str(self.point_track))
                 print "congrats" + "you now have " + str(self.point_track) + " points"
-                self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
+                # turns the entry into a blank string
+                self.drawn_number[numbers_entry] = ''
                 self.number_marker[numbers_entry] = 0
                 if 1 in self.number_marker:
                     self.shownumber(self.drawn_number)
                 else:
                     print "you win"
-                    self.half_restart_game() # needs to be a half restart
+                    # calls the half_restart_game method
+                    self.half_restart_game()
         else:
             print "wrong"
-            self.life_track -= 1 # subtract a life from the life counter
-            self.rex_lives() # re-do the image for lives and check for game-over
+            # subtract a life from the life counter
+            self.life_track -= 1
+            # re-do the image for lives and check for game-over
+            self.rex_lives()
             if self.life_track > 0:
-                self.drawn_number[numbers_entry] = '' # turns the entry into a blank string
-                self.number_marker[numbers_entry] = 0 # make the numbers_marker 0
-                self.shownumber(self.drawn_number) # runs the shownumber method with new list
+                # turns the entry into a blank string
+                self.drawn_number[numbers_entry] = ''
+                # make the numbers_marker 0
+                self.number_marker[numbers_entry] = 0
+                # runs the shownumber method with new list
+                self.shownumber(self.drawn_number)
             else:
                 pass
 
-
-
-# end of DinoFrame
-
 def main():
-    root = Tk() #creates the tk
+    """Initializes the root, creates the tk, and starts the game."""
+    root = Tk()
     root.resizable(0,0)
     root.title("Dinomuncher USA!")
 
-    app = DinoFrame(master=root) # initialize the application
+    # initialize the application
+    app = DinoFrame(master=root)
 
-    app.pack(side="top", fill="both", expand="true", padx=4, pady=4) # pad gives window a little extra room
+    # pad gives window a little extra room
+    app.pack(side="top", fill="both", expand="true", padx=4, pady=4)
 
     # calling the piece method and initializes player1
-    player1 = "rex_skull2.gif" # sets the variable to a string
-    app.piece("player1",player1,0,0) # calls the piece method arguments are (name, image, row, column)
+    # sets the variable to a string
+    player1 = "rex_skull2.gif"
+    # calls the piece method arguments are (name, image, row, column)
+    app.piece("player1",player1,0,0)
 
     # key bindings
-    root.bind('<Escape>', lambda e: root.quit()) # lambda allows you to write user input functions
-    root.bind('<Left>',app.leftkey) # these call the keys. one could also write this with %s and a dictionary
+    # lambda allows you to write user input functions
+    root.bind('<Escape>', lambda e: app.quit())
+    root.bind('<Left>',app.leftkey)
     root.bind('<Right>',app.rightkey)
     root.bind('<Up>',app.upkey)
     root.bind('<Down>',app.downkey)
     root.bind('<space>',app.spacebar)
 
-    root.mainloop() # begins the application
-    root.destroy()
+    # begins the event loop of the root
+    root.mainloop()
 main()

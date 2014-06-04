@@ -53,6 +53,7 @@ class DinoFrame(Frame):
         self.pieces = {}
         self.player1 = 0
         self.meteor1 = 0
+        self.meteoron = 0
 
         # more piece variables
         self.metx0 = 0
@@ -77,6 +78,8 @@ class DinoFrame(Frame):
         # int variable used to track points
         self.point_track = 0
         self.level_track = 1
+        # used to increase the difficulty of the meteor
+        self.mlevel_track = self.level_track
         # number of lives at the start
         self.life_track = 3
 
@@ -120,6 +123,8 @@ class DinoFrame(Frame):
         # initialize widgets
         self.createWidgets()
 
+        self.meteor()
+
     def callback1(self):
         """ Definitions for the operation selection (callback functions)
         these unpack the num_dict and turn it into useful lists via for loop.
@@ -143,7 +148,6 @@ class DinoFrame(Frame):
         self.v1.set('Score: '+ str(self.point_track))
         self.v2.set('Level: '+str(self.level_track))
         self.rex_lives()
-        self.meteor()
 
     def callback2(self):
         """ Definitions for the operation selection (callback functions) see docstring in callback1"""
@@ -301,6 +305,7 @@ class DinoFrame(Frame):
         # int variable used to track points
         self.point_track = 0
         self.level_track = 1
+        self.mlevel_track = self.level_track
         # number of lives at the start
         self.life_track = 3
         self.QUIT.lift
@@ -313,12 +318,27 @@ class DinoFrame(Frame):
         self.canvas.delete("piece")
         self.canvas.delete("the_text")
         self.canvas.delete("circle")
-        self.meteoron = 0
+
+        # because self.meteor and self.flash8 have the longest timers, this tries prevents a bug
+        # so far this bug fix does not work
+        self.update_idletasks()
+        self.after_cancel(self.meteor)
+        self.after_cancel(self.flash)
+        self.after_cancel(self.flash1)
+        self.after_cancel(self.flash2)
+        self.after_cancel(self.flash3)
+        self.after_cancel(self.flash4)
+        self.after_cancel(self.flash5)
+        self.after_cancel(self.flash6)
+        self.after_cancel(self.flash7)
+        self.after_cancel(self.flash8)
+        self.update_idletasks()
 
         self.player1 = PhotoImage(file='rex_skull2.gif')
         self.piece("player1",self.player1,0,0)
         self.select1.lift
         self.level_track += 1
+        self.mlevel_track = self.level_track*2 + self.point_track//20
 
         del self.number_marker
         self.number_marker = []
@@ -525,27 +545,27 @@ class DinoFrame(Frame):
         self.canvas.lower('one')
         self.canvas.lower('two')
         self.canvas.lower('three')
-        self.after(3000,self.flash)
+        self.after(3000/self.level_track,self.flash)
 
     def flash(self):
         '''Calls the Flash class'''
         flash = Flash(self.canvas,'one')
-        self.after(500, self.flash1)
+        self.after(500/self.mlevel_track, self.flash1)
     def flash1(self):
         flash = Flash(self.canvas,'one')
-        self.after(500, self.flash2)
+        self.after(500/self.mlevel_track, self.flash2)
     def flash2(self):
         flash = Flash(self.canvas,'two')
-        self.after(500, self.flash3)
+        self.after(500/self.mlevel_track, self.flash3)
     def flash3(self):
         flash = Flash(self.canvas,'two')
-        self.after(500, self.flash4)
+        self.after(500/self.mlevel_track, self.flash4)
     def flash4(self):
         flash = Flash(self.canvas,'three')
-        self.after(500, self.flash5)
+        self.after(500/self.mlevel_track, self.flash5)
     def flash5(self):
         flash = Flash(self.canvas,'three')
-        self.after(500, self.flash6)
+        self.after(500/self.mlevel_track, self.flash6)
 
     def flash6(self):
         """This is where you call the meteor onto the board"""

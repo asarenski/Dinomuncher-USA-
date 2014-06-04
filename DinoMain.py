@@ -52,6 +52,10 @@ class DinoFrame(Frame):
         # a dictionary for any pieces on the game board
         self.pieces = {}
 
+        # more piece variables
+        self.metx0 = 0
+        self.mety0 = 0
+
         # variables used initially by the callbacks and drawing the numbers
         # number marker for right or wrong answer
         self.number_marker = []
@@ -109,7 +113,7 @@ class DinoFrame(Frame):
         self.canvas.pack(side="top", fill="both", expand=True, padx=2, pady=2)
 
         # initializes the checkered board with self.refresh
-        self.canvas.bind("<Configure>", self.refresh)
+        self.refresh()
 
         # initialize widgets
         self.createWidgets()
@@ -261,6 +265,7 @@ class DinoFrame(Frame):
         """
         self.canvas.delete("piece")
         self.canvas.delete("the_text")
+        self.canvas.delete ("circle")
 
         player1 = "rex_skull2.gif"
         self.piece("player1",player1,0,0)
@@ -293,6 +298,7 @@ class DinoFrame(Frame):
         """
         self.canvas.delete("piece")
         self.canvas.delete("the_text")
+        self.canvas.delete("circle")
 
         player1 = "rex_skull2.gif"
         self.piece("player1",player1,0,0)
@@ -321,7 +327,7 @@ class DinoFrame(Frame):
         """print_coord widgest command"""
         print self.drawn_number
         print self.number_marker
-        print self.pieces["player1"]
+        print self.pieces
 
     def piece(self, name, image, row=0, column=0):
         """Puts the image of the piece on the board.
@@ -356,16 +362,10 @@ class DinoFrame(Frame):
                 y1 = (row * self.size) + int(self.size/2)-0
                 text1 = drawn_number[col+row*self.columns]
                 self.canvas.create_text(x1,y1, font =("Times", "24", "bold"), text=text1, tags="the_text")
+        self.refresh()
 
-    def refresh(self, event):
-        """ Initializes the checkered board.
-        The way this function is written allows it to be modified for a configurable window
-        such as in the event of resizing the window. Currently resizing has been disabled in
-        the main function.
-        """
-        xsize = int((event.width-1) / self.columns)
-        ysize = int((event.height-1) / self.rows)
-        self.size = min(xsize, ysize)
+    def refresh(self):
+        """ Initializes the checkered board."""
         self.canvas.delete("square")
         color = self.color2
         for row in range(self.rows):
@@ -380,13 +380,15 @@ class DinoFrame(Frame):
                 color = self.color1 if color == self.color2 else self.color2
 
         # need to do the same thing with the numbers that we put on the board
-        for name in self.pieces:
+        # for name in self.pieces:
             # places the piece back where it was on the canvas after the redraw
-            self.placepiece(name, self.pieces[name][0], self.pieces[name][1])
+            # self.placepiece(name, self.pieces[name][0], self.pieces[name][1])
+            # some changes
+        self.somepracticevariable = 0
 
-            # raise and lower are like lift for tkinter
-            self.canvas.tag_raise("piece")
-            self.canvas.tag_lower("square")
+            # raise and lower are like lift and lower
+        self.canvas.tag_raise("piece")
+        self.canvas.tag_lower("square")
 
     def leftkey(self,event):
         """Controls
@@ -501,60 +503,58 @@ class DinoFrame(Frame):
         '''
         def circle(self,name,x,y,r,fill,state):
             self.canvas.create_oval(x-r,y-r,x+r,y+r, fill=fill,state=state, tags=(name,"circle"))
-        # selects a random square on the board to flash
-        x0 = self.size/2 + self.size * random.randrange(self.columns)
-        y0 = self.size/2 + self.size * random.randrange(self.rows)
-        print x0
-        print y0
-        meteor = circle(self,"one", x0,y0,40,"blue","normal")
+        # selects a random square on the board to flash, self.size is 96 pixels by default set in DinoFrame
+        self.metx0 = self.size/2 + self.size * random.randrange(self.columns)
+        self.mety0 = self.size/2 + self.size * random.randrange(self.rows)
+        meteor_one = circle(self,"one", self.metx0,self.mety0,40,"red","hidden")
+        meteor_two = circle(self,"two", self.metx0,self.mety0,30,"red","hidden")
+        meteor_three = circle(self,"three", self.metx0,self.mety0,20,"red","hidden")
         self.canvas.lower('one')
+        self.canvas.lower('two')
+        self.canvas.lower('three')
         self.after(3000,self.flash)
     def flash(self):
         '''Calls the Flash class'''
-        flash = Flash(self.canvas)
-        self.after(300, self.flash1)
+        flash = Flash(self.canvas,'one')
+        self.after(600, self.flash1)
     def flash1(self):
-        flash = Flash(self.canvas)
-        self.after(300, self.flash2)
+        flash = Flash(self.canvas,'one')
+        self.after(600, self.flash2)
     def flash2(self):
-        flash = Flash(self.canvas)
-        self.after(300, self.flash3)
+        flash = Flash(self.canvas,'two')
+        self.after(600, self.flash3)
     def flash3(self):
-        flash = Flash(self.canvas)
-        self.after(300, self.flash4)
+        flash = Flash(self.canvas,'two')
+        self.after(600, self.flash4)
     def flash4(self):
-        flash = Flash(self.canvas)
-        self.after(300, self.flash5)
+        flash = Flash(self.canvas,'three')
+        self.after(600, self.flash5)
     def flash5(self):
-        flash = Flash(self.canvas)
-        self.after(300, self.flash6)
+        flash = Flash(self.canvas,'three')
+        self.after(600, self.flash6)
     def flash6(self):
-        flash = Flash(self.canvas)
+        """This is where you call the meteor onto the board"""
+        meteor = 'Meteor1.gif'
+        # calls piece method and converts the canvas pixel coords into row/col coords
+        self.piece('meteor1',meteor,self.metx0/self.size,self.mety0/self.size)
+        self.refresh()
 
 class Flash():
-    def __init__(self,canvas):
+    def __init__(self,canvas,name):
         '''Used for when the meteor will hit'''
         self.canvas = canvas
+        self.name = name
         self.flash_main()
 
     def flash_main(self):
         '''Flashes where the meteor will hit'''
-        self.canvas.lift('one')
-        current_state = self.canvas.itemcget('one','state')
+        self.canvas.lift(self.name)
+        current_state = self.canvas.itemcget(self.name,'state')
         if current_state == "normal":
             new_state = "hidden"
-            self.canvas.itemconfigure('one',state=new_state)
+            self.canvas.itemconfigure(self.name,state=new_state)
         else:
-            self.canvas.itemconfigure('one',state='normal')
-        print current_state
-
-        current_color = self.canvas.itemcget('one','fill')
-        if current_color == "red":
-            new_color = "blue"
-            self.canvas.itemconfigure('one', fill=new_color)
-        else:
-            self.canvas.itemconfigure('one', fill="red")
-        current_color = self.canvas.itemcget('one','fill')
+            self.canvas.itemconfigure(self.name,state='normal')
 
 def main():
     """Initializes the root, creates the tk, and starts the game."""

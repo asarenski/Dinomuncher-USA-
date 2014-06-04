@@ -10,7 +10,7 @@ This file requires the input of MathFile.py to work.
 # tkinter is a GUI writing module that can also be used to write games
 from Tkinter import *
 from MathFile import math_main
-
+import random
 
 class Select_Menu(Frame):
     def __init__(self, master, text, height, width, *args, **kwargs):
@@ -501,7 +501,12 @@ class DinoFrame(Frame):
         '''
         def circle(self,name,x,y,r,fill,state):
             self.canvas.create_oval(x-r,y-r,x+r,y+r, fill=fill,state=state, tags=(name,"circle"))
-        meteor = circle(self,"one", 142,48,40,"blue","normal")
+        # selects a random square on the board to flash
+        x0 = self.size/2 + self.size * random.randrange(self.columns)
+        y0 = self.size/2 + self.size * random.randrange(self.rows)
+        print x0
+        print y0
+        meteor = circle(self,"one", x0,y0,40,"blue","normal")
         self.canvas.lower('one')
         self.after(3000,self.flash)
     def flash(self):

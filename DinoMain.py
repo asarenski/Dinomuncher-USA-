@@ -12,6 +12,7 @@ from Tkinter import *
 from MathFile import math_main
 import random
 
+
 class Select_Menu(Frame):
     def __init__(self, master, text, height, width, *args, **kwargs):
 
@@ -123,6 +124,7 @@ class DinoFrame(Frame):
         # initialize widgets
         self.createWidgets()
 
+        # starts the loop for the meteor enemy
         self.meteor()
 
     def callback1(self):

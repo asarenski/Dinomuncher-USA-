@@ -51,6 +51,8 @@ class DinoFrame(Frame):
 
         # a dictionary for any pieces on the game board
         self.pieces = {}
+        self.player1 = 0
+        self.meteor1 = 0
 
         # more piece variables
         self.metx0 = 0
@@ -141,8 +143,7 @@ class DinoFrame(Frame):
         self.v1.set('Score: '+ str(self.point_track))
         self.v2.set('Level: '+str(self.level_track))
         self.rex_lives()
-        #testing the test area
-        self.test_area()
+        self.meteor()
 
     def callback2(self):
         """ Definitions for the operation selection (callback functions) see docstring in callback1"""
@@ -260,15 +261,30 @@ class DinoFrame(Frame):
         self.LIVES['image'] = self.lives_image
 
     def restart_game(self):
-        """Function used if the player runs out of lives.
+        """Function used if the player runs out of lives or clicks restart button.
         Brings the player back to the select menu.
         """
         self.canvas.delete("piece")
         self.canvas.delete("the_text")
         self.canvas.delete ("circle")
 
-        player1 = "rex_skull2.gif"
-        self.piece("player1",player1,0,0)
+        # because self.meteor and self.flash8 have the longest timers, this tries prevents a bug
+        # so far this bug fix does not work
+        self.update_idletasks()
+        self.after_cancel(self.meteor)
+        self.after_cancel(self.flash)
+        self.after_cancel(self.flash1)
+        self.after_cancel(self.flash2)
+        self.after_cancel(self.flash3)
+        self.after_cancel(self.flash4)
+        self.after_cancel(self.flash5)
+        self.after_cancel(self.flash6)
+        self.after_cancel(self.flash7)
+        self.after_cancel(self.flash8)
+        self.update_idletasks()
+
+        self.player1 = PhotoImage(file='rex_skull2.gif')
+        self.piece("player1",self.player1,0,0)
         self.select1.lift()
 
         self.v.set("Game Over , Your Score: " + str(self.point_track) + ", Max Level: " + str(self.level_track))
@@ -289,8 +305,6 @@ class DinoFrame(Frame):
         self.life_track = 3
         self.QUIT.lift
         self.hi_there.lift
-        # re-do the image for lives
-        self.rex_lives()
 
     def half_restart_game(self):
         """Function used if the player beats the level.
@@ -299,9 +313,10 @@ class DinoFrame(Frame):
         self.canvas.delete("piece")
         self.canvas.delete("the_text")
         self.canvas.delete("circle")
+        self.meteoron = 0
 
-        player1 = "rex_skull2.gif"
-        self.piece("player1",player1,0,0)
+        self.player1 = PhotoImage(file='rex_skull2.gif')
+        self.piece("player1",self.player1,0,0)
         self.select1.lift
         self.level_track += 1
 
@@ -329,15 +344,11 @@ class DinoFrame(Frame):
         print self.number_marker
         print self.pieces
 
-    def piece(self, name, image, row=0, column=0):
+    def piece(self, name, image, row, column):
         """Puts the image of the piece on the board.
         Also calls placepiece, which puts it in the pieces dictionary.
         """
-        # takes the string of the .gif
-        self.image = PhotoImage(file=image)
-        # canvas 'c' is for center
-        self.canvas.create_image(0,0, image = self.image, tags=(name, "piece"), anchor="c")
-        # calls the placepiece function, which places it in coordinates
+        self.canvas.create_image(row,column, image = image, tags=(name, "piece"))
         self.placepiece(name, row, column)
 
     def placepiece(self, name, row, column):
@@ -346,8 +357,10 @@ class DinoFrame(Frame):
         that the row just means x_i . This is so that it plays nicely with refresh event for board
         """
         self.pieces[name] = [row, column]
+        # conversion of board coordinates to canvas coordinates
         x0 = (row * self.size) + int(self.size/2)
         y0 = (column * self.size) + int(self.size/2)
+        # when coordinates given, those replace the coords shown here
         self.canvas.coords(name, x0, y0)
 
     def shownumber(self, drawn_number):
@@ -378,15 +391,11 @@ class DinoFrame(Frame):
                 y2 = y1 + self.size
                 self.canvas.create_rectangle(x1, y1, x2, y2, outline="black", fill=color, tags="square")
                 color = self.color1 if color == self.color2 else self.color2
-
-        # need to do the same thing with the numbers that we put on the board
-        # for name in self.pieces:
-            # places the piece back where it was on the canvas after the redraw
-            # self.placepiece(name, self.pieces[name][0], self.pieces[name][1])
-            # some changes
-        self.somepracticevariable = 0
-
-            # raise and lower are like lift and lower
+        for name in self.pieces:
+            x0 = (self.pieces[name][0] * self.size) + int(self.size/2)
+            y0 = (self.pieces[name][1] * self.size) + int(self.size/2)
+            self.canvas.coords(name, x0, y0)
+        # raise and lower are like lift and lower
         self.canvas.tag_raise("piece")
         self.canvas.tag_lower("square")
 
@@ -490,20 +499,24 @@ class DinoFrame(Frame):
                 pass
 
     #currently a test area for implementing a meteor
-    def test_area(self):
-        '''Currently this stuff only works with multiples operation'''
-        if self.level_track > 0:
-            self.meteor()
-        else:
-            pass
+    def subtract_life(self):
+        print "death"
+        # subtract a life from the life counter
+        self.life_track -= 1
+        # re-do the image for lives and check for game-over
+        self.rex_lives()
+        self.placepiece('player1',0,0)
+
     def meteor(self):
         ''' Creates the flashing circles indicating a meteor is coming.
         It then lowers the circles so they can't be seen.
         After this is done it calls the flash method.
         '''
+        self.canvas.delete('circle')
+        self.canvas.delete('meteor1')
         def circle(self,name,x,y,r,fill,state):
             self.canvas.create_oval(x-r,y-r,x+r,y+r, fill=fill,state=state, tags=(name,"circle"))
-        # selects a random square on the board to flash, self.size is 96 pixels by default set in DinoFrame
+        #canvas coords
         self.metx0 = self.size/2 + self.size * random.randrange(self.columns)
         self.mety0 = self.size/2 + self.size * random.randrange(self.rows)
         meteor_one = circle(self,"one", self.metx0,self.mety0,40,"red","hidden")
@@ -513,31 +526,50 @@ class DinoFrame(Frame):
         self.canvas.lower('two')
         self.canvas.lower('three')
         self.after(3000,self.flash)
+
     def flash(self):
         '''Calls the Flash class'''
         flash = Flash(self.canvas,'one')
-        self.after(600, self.flash1)
+        self.after(500, self.flash1)
     def flash1(self):
         flash = Flash(self.canvas,'one')
-        self.after(600, self.flash2)
+        self.after(500, self.flash2)
     def flash2(self):
         flash = Flash(self.canvas,'two')
-        self.after(600, self.flash3)
+        self.after(500, self.flash3)
     def flash3(self):
         flash = Flash(self.canvas,'two')
-        self.after(600, self.flash4)
+        self.after(500, self.flash4)
     def flash4(self):
         flash = Flash(self.canvas,'three')
-        self.after(600, self.flash5)
+        self.after(500, self.flash5)
     def flash5(self):
         flash = Flash(self.canvas,'three')
-        self.after(600, self.flash6)
+        self.after(500, self.flash6)
+
     def flash6(self):
         """This is where you call the meteor onto the board"""
-        meteor = 'Meteor1.gif'
+        # for some reason this needs to stay global
+        self.meteor1 = PhotoImage(file='Meteor1.gif')
         # calls piece method and converts the canvas pixel coords into row/col coords
-        self.piece('meteor1',meteor,self.metx0/self.size,self.mety0/self.size)
+        self.piece('meteor1',self.meteor1,self.metx0/self.size,self.mety0/self.size)
         self.refresh()
+        self.after(5, self.flash7)
+
+    def flash7(self):
+            player_pos = self.pieces['player1']
+            meteor_pos = self.pieces['meteor1']
+            if player_pos == meteor_pos:
+                self.subtract_life()
+            else:
+                pass
+            self.after(200,self.flash8)
+
+    def flash8(self):
+        self.canvas.delete('meteor1')
+        self.canvas.delete('circle')
+        self.pieces.pop('meteor1')
+        self.meteor()
 
 class Flash():
     def __init__(self,canvas,name):
@@ -570,7 +602,7 @@ def main():
 
     # calling the piece method and initializes player1
     # sets the variable to a string
-    player1 = "rex_skull2.gif"
+    player1 = PhotoImage(file='rex_skull2.gif')
     # calls the piece method arguments are (name, image, row, column)
     app.piece("player1",player1,0,0)
 

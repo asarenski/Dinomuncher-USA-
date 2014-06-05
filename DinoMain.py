@@ -11,7 +11,8 @@ This file requires the input of MathFile.py to work.
 from Tkinter import *
 from MathFile import math_main
 import random
-
+import pyaudio
+import wave
 
 class Select_Menu(Frame):
     def __init__(self, master, text, height, width, *args, **kwargs):
@@ -126,6 +127,31 @@ class DinoFrame(Frame):
 
         # starts the loop for the meteor enemy
         self.meteor()
+
+        #jpark
+        self.play_jpark_one()
+
+    def play_jpark_one(self):
+        self.wf = wave.open('jpark.wav', 'rb')
+        self.p = pyaudio.PyAudio()
+        def callback(in_data, frame_count, time_info, status):
+            data = self.wf.readframes(frame_count)
+            return (data, pyaudio.paContinue)
+        self.stream = self.p.open(format=self.p.get_format_from_width(self.wf.getsampwidth()),
+                        channels=self.wf.getnchannels(),
+                        rate=self.wf.getframerate(),
+                        output=True,
+                        stream_callback=callback)
+
+    def play_jpark_two(self):
+        self.stream.start_stream()
+        if self.stream.is_active == True:
+            self.after(1,self.play_jpark_two)
+        else:
+            self.stream.stop_stream()
+            self.stream.close()
+            self.wf.close()
+            self.p.terminate()
 
     def callback1(self):
         """ Definitions for the operation selection (callback functions)
@@ -568,7 +594,6 @@ class DinoFrame(Frame):
     def flash5(self):
         flash = Flash(self.canvas,'three')
         self.after(500/self.mlevel_track, self.flash6)
-
     def flash6(self):
         """This is where you call the meteor onto the board"""
         # for some reason this needs to stay global
@@ -577,7 +602,6 @@ class DinoFrame(Frame):
         self.piece('meteor1',self.meteor1,self.metx0/self.size,self.mety0/self.size)
         self.refresh()
         self.after(5, self.flash7)
-
     def flash7(self):
             player_pos = self.pieces['player1']
             meteor_pos = self.pieces['meteor1']
@@ -586,7 +610,6 @@ class DinoFrame(Frame):
             else:
                 pass
             self.after(200,self.flash8)
-
     def flash8(self):
         self.canvas.delete('meteor1')
         self.canvas.delete('circle')

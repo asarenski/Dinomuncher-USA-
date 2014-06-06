@@ -11,8 +11,7 @@ This file requires the input of MathFile.py to work.
 from Tkinter import *
 from MathFile import math_main
 import random
-import pyaudio
-import wave
+import pyglet
 
 class Select_Menu(Frame):
     def __init__(self, master, text, height, width, *args, **kwargs):
@@ -56,6 +55,7 @@ class DinoFrame(Frame):
         self.player1 = 0
         self.meteor1 = 0
         self.meteoron = 0
+        self.menuon = 1
 
         # more piece variables
         self.metx0 = 0
@@ -128,30 +128,14 @@ class DinoFrame(Frame):
         # starts the loop for the meteor enemy
         self.meteor()
 
-        #jpark
-        self.play_jpark_one()
-
-    def play_jpark_one(self):
-        self.wf = wave.open('jpark.wav', 'rb')
-        self.p = pyaudio.PyAudio()
-        def callback(in_data, frame_count, time_info, status):
-            data = self.wf.readframes(frame_count)
-            return (data, pyaudio.paContinue)
-        self.stream = self.p.open(format=self.p.get_format_from_width(self.wf.getsampwidth()),
-                        channels=self.wf.getnchannels(),
-                        rate=self.wf.getframerate(),
-                        output=True,
-                        stream_callback=callback)
-
-    def play_jpark_two(self):
-        self.stream.start_stream()
-        if self.stream.is_active == True:
-            self.after(1,self.play_jpark_two)
-        else:
-            self.stream.stop_stream()
-            self.stream.close()
-            self.wf.close()
-            self.p.terminate()
+    def explosion(self):
+        ''' used to simply play a sound, no music'''
+        sound = pyglet.resource.media('explosion-01.wav', streaming=False)
+        sound.play()
+    def rex_noise(self):
+        ''' used to simply play a sound, no music'''
+        sound2 = pyglet.resource.media('rex_noise.wav', streaming=False)
+        sound2.play()
 
     def callback1(self):
         """ Definitions for the operation selection (callback functions)
@@ -176,6 +160,7 @@ class DinoFrame(Frame):
         self.v1.set('Score: '+ str(self.point_track))
         self.v2.set('Level: '+str(self.level_track))
         self.rex_lives()
+        self.menuon = 0
 
     def callback2(self):
         """ Definitions for the operation selection (callback functions) see docstring in callback1"""
@@ -299,6 +284,7 @@ class DinoFrame(Frame):
         self.canvas.delete("piece")
         self.canvas.delete("the_text")
         self.canvas.delete ("circle")
+        self.menuon = 1
 
         # because self.meteor and self.flash8 have the longest timers, this tries prevents a bug
         # so far this bug fix does not work
@@ -534,6 +520,7 @@ class DinoFrame(Frame):
             print "wrong"
             # subtract a life from the life counter
             self.life_track -= 1
+            self.rex_noise()
             # re-do the image for lives and check for game-over
             self.rex_lives()
             if self.life_track > 0:
@@ -549,6 +536,7 @@ class DinoFrame(Frame):
     #currently a test area for implementing a meteor
     def subtract_life(self):
         print "death"
+        self.rex_noise()
         # subtract a life from the life counter
         self.life_track -= 1
         # re-do the image for lives and check for game-over
@@ -601,6 +589,10 @@ class DinoFrame(Frame):
         # calls piece method and converts the canvas pixel coords into row/col coords
         self.piece('meteor1',self.meteor1,self.metx0/self.size,self.mety0/self.size)
         self.refresh()
+        if self.menuon == 0:
+            self.explosion()
+        else:
+            pass
         self.after(5, self.flash7)
     def flash7(self):
             player_pos = self.pieces['player1']

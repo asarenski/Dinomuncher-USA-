@@ -1,0 +1,74 @@
+/* old stuff for reference */
+
+/* h1 {
+    text-shadow: 1px 1px 1px #ccc
+}
+*/
+
+h1 h2{
+    text-shadow: 1px 1px 1px #ccc
+}
+.jumbotron-1{
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    background-color: #2b3e50;
+}
+
+.jumbotron-special{
+    background-color: #2b3e50;
+}
+/*
+p, div {
+    font-family: 'Nobile', Helvetica, Arial, sans-serif;
+}*/
+
+footer li{
+    padding: 0 10px;
+    font-size: small;
+    display: inline;
+}
+
+footer p{
+    font-size: small;
+}
+
+body{
+    background-image: url("images/DSC_copy.JPG");
+}
+
+.tot-body{
+    background-color: #2b3e50;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.95;
+}
+
+/* this allows me to have an auto margin w good proportions*/
+@media (min-width: 768px) {
+  .tot-body {
+    width: 795px;
+  }
+}
+@media (min-width: 992px) {
+  .tot-body {
+    width: 1020px;
+  }
+}
+@media (min-width: 1200px) {
+  .tot-body {
+    width: 1300px;
+  }
+}
+
+pre {
+    background-color: #4e5d6c;
+    opacity: .95;
+    color: #ffffff;
+    border: none;
+    margin: 0;
+}
+
+.popover {
+    min-width: 950px;
+}

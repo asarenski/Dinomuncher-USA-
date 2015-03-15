@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title>asarenski.github.io</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Fonts
+================================================== -->
+    <link href="http://fonts.googleapis.com/css?family=Nobile" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Bevan' rel='stylesheet' type='text/css'>
+
+    <!-- These are so drop-down in nav collapse can work -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
+</head>
+<body>
+
+<div class="tot-body">
+<div class="container">
+
+
+
+<!-- Navigation
+================================================== -->
+<div class="navbar navbar-inverse">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href='index.html'>HOME</a>
+  </div>
+  <div class="navbar-collapse collapse navbar-inverse-collapse">
+    <ul class="nav navbar-nav">
+      <li><a href="about.html">ABOUT</a></li>
+      <li class="active"><a href="requirements.html">REQUIREMENTS</a></li>
+      <li><a href="dinomuncher.html">DINOMUNCHER</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
+    </ul>
+      <ul class="nav navbar-nav navbar-right">
+      <li>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="hosted_button_id" value="M7QM8QCU6VJRJ">
+        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
+      </li>
+      <li>
+        <a href="https://twitter.com/asarenski" class="twitter-follow-button" data-show-count="false">Follow @asarenski</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sites <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="index.html">asarenski.github.io</a></li>
+          <li><a href="https://sites.google.com/site/adamsarenskicaddesign/">CAD Design</a></li>
+          <li><a href="https://github.com/asarenski">asarenski github</a></li>
+        </ul>
+      </li>
+      </ul>
+  </div>
+</div>
+
+<!-- Jumbotron
+================================================== -->
+    <div class="jumbotron jumbotron-special">
+        <div class="container">
+            <h1>requirements</h1>
+            <h2>Setting-up the Python Environment</h2>
+        </div>
+    </div>
+
+<!-- Main Body
+================================================== -->
+    <div class="home_body">
+        <div class="container">
+            <div class="page-header">
+                <h1>Operating System</h1>
+            </div>
+                <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+                  <li class="active"><a href="#ubuntu" data-toggle="tab">Ubuntu</a></li>
+                  <li><a href="#mac" data-toggle="tab">Mac</a></li>
+                  <li><a href="#windows" data-toggle="tab">Windows</a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                  <div class="tab-pane fade active in" id="ubuntu">
+                    <p>Dinomuncher was created entirely in the <a href="http://www.ubuntu.com/">Ubuntu</a> environment.
+                       It's free and easy to set up. If you're currently using Windows, then this is your best option.
+                       My recommendation is <a href="http://www.ubuntu.com/download/desktop">Ubuntu 14.04LTS</a>.
+                       It is new as of April, 2014. It has features akin to Windows 7. It will also be supported for 5 years.
+                    </p>
+                    <div class="alert alert-dismissable alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <h4><b>Note:</b></h4>
+                        <p><b>If you have trouble with this installation, a quick Google search of the error will lead you
+                           in the right direction.</b></p>
+                    </div>
+                    <p>If you decide you would like to use an older version of Ubuntu you will have a lot of updating to do.
+                       For example Ubuntu 12.04LTS comes standard with Python 2.7.3. The interpreter for Dinomuncher is Python 2.7.6.
+                       Some of the modules written about below are much easier to set up in 14.04LTS.
+                    </p>
+                    <br>Already a pro?<br><a href="#pyg">Skip to P
+                      Pyglet and Tkinter installation</a>
+                  </div>
+                  <div class="tab-pane fade" id="mac">
+                    <p>Most likely your system is already set up to run Python. For example Mac OS X 10.8 comes with Python 2.7 pre-installed by Apple.<a href="https://docs.python.org/2/using/mac.html">(reference)</a>
+                       Unfortunately this guide will only provide information on an set-up in Ubuntu.
+                    </p>
+                    <p>You can still play Dinomuncher though! Clone the <a href="https://github.com/asarenski/Dinomuncher-USA-">Dinomuncher-USA-.git</a>.
+                       Run <i>DinoMainNoSound.py</i> for a simple installation. If desired, you can probably figure out
+                       how to install the module necessary for sound on Mac by reviewing the Ubuntu environment installation.
+                    </p>
+                    <br>Already a pro?<br><a href="#pyg">Skip to Pyglet and Tkinter installation</a>
+                  </div>
+                  <div class="tab-pane fade" id="windows">
+                    <p>It is not recommended that one uses Windows as their Python environment. There are many awesome,
+                       free tools that make development easier. Most of the documentation I've seen only covers Linux installation.
+                       This means that Ubuntu and Mac are supported by these tools, but Windows support is hacky at best.
+                    </p>
+                  </div>
+
+            <div class="page-header">
+                <h1>Ubuntu Set-up</h1>
+            </div>
+            <h3>Ubuntu Software Center</h3>
+            <p>I find it easiest to set-up the software center. This way you don't have to manually update your files.
+               It is also an easier transition if you are new to Linux. Click the dash home in the top left. Type in terminal.
+               Click XTerm. This is a basic pre-installed terminal to Ubuntu. Make sure that you are in the home directory
+               by typing:
+            </p>
+            <div class="well">
+                <b>cd ~ [Enter]</b>
+            </div>
+            <p>
+                Next Type:
+            </p>
+            <div class="well">
+                <b>sudo apt-get install software-center</b>
+            </div>
+            <p>
+                And then type in your sudo password. After the installation is complete you can go back to the dash to search
+                for the Ubuntu Software Center. Search for "Java". Click <i>OpenJDK Java 7 Runtime</i> and Install.
+                This installs Java for the Integrated Development Environment (IDE) tool we plan to use. I also recommend
+                using the Ubuntu Software Center to install <i>Gnome Terminal</i> if it is not already installed.
+            </p>
+            <h3>Git</h3>
+            <p>Go into the terminal and type:</p>
+            <div class="well">
+                <b>sudo apt-get update<br>
+                sudo apt-get install git</b>
+            </div>
+            <p>
+                This action will install Git, which is a free piece of software used for version control.
+            </p>
+            <h3>Venv Burrito</h3>
+            <p>This free tool is a gem. It will make your development experience less frustrating. Follow <a href="https://github.com/brainsik/virtualenv-burrito">this link</a> for download and instructions.</p>
+            <div class="alert alert-dismissable alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <h4><b>Important:</b></h4>
+                        <p><b>Virtual environments are absolutely necessary for a clean environment.</b></p>
+            </div>
+            <p>
+                The reason for the warning is because of my own personal experience. I had installed Virtualenv and I thought it
+                was working. After tinkering with it for an extended period of time, I decided to install the <i>pyaudio</i> module
+                to my system library. After messing around in Pycharm for a little longer I encountered an error, which
+                distorted the sound of the game.
+            </p>
+            <p>
+                It was akin to if one alt-tabs from a game too many times. I restarted
+                the computer and the computer would not boot past the purple Ubuntu screen. I followed every fix in the
+                book. After many hours I just uninstalled and reinstalled. Luckily my work was backed-up on Github. It would
+                probably have saved me some time if I had my Virtualenv set up properly.
+            </p>
+
+            <div class="page-header">
+                <h1>PyCharm</h1>
+            </div>
+            <h3>PyCharm IDE</h3>
+            <p>Pycharm, Community Edition, is free and powerful. Plus it is available on Windows, Mac, and Linux.
+               Download PyCharm <a href="http://www.jetbrains.com/pycharm/download/">here</a> and follow the installation
+               instructions.
+            </p>
+            <p>
+                The pycharm.sh file is a shell script. So for example to run this from the terminal, navigate to the PyCharm
+                bin subdirectory in the terminal and run. Type this into the terminal. Note there is a space between cd and ~.
+            </p>
+            <div class="well">
+                <b>cd ~/"your_pychar_dir"/bin<br>
+                sh pycharm.sh</b>
+            </div>
+            <p>
+                This allows you to run PyCharm for the first time. You'll open to a window that looks like this:<br>
+            </p>
+            <img src="css/images/pyc1.gif"><br><br>
+            <p>
+                In this example I currently have my native python interpreter selected for the project. We're going to set
+                up a virtualEnv through PyCharm first. In the future you'll probably resort to creating virtualEnvs in the
+                terminal and then directing PyCharm to that directory. Select the settings menu to the right of the interpreter.
+            </p>
+            <img src="css/images/pyc2.gif"><br><br>
+            <p>
+                This will bring up a window like this
+            </p>
+            <img src="css/images/pyc3.gif"><br><br>
+            <p id="open-project">
+                Because I have Venv Burrito set up, my Location: is a .virtualenvs location. Just create a directory like
+                /home/<i>username</i>/someproject and click ok. You just created the virtualenv. Now name the project whatever
+                pleases you and click ok. This will open PyCharm into the main IDE screen. Go to the View dropdown menu at the top.
+                Select Toolbar so that your toolbar will show at the top of the screen. Then click the small icon on the right for
+                settings. Alternatively you could hit Ctrl+Alt+S. Click Project Interpreter in the menu on the left, which will show
+                a screen like this.
+            </p>
+            <img src="css/images/pyc4.gif"><br><br>
+            <p id="pyg">
+                Your screen may show even fewer packages. The main ones we need are pip and setuptools. These are package installers,
+                which can be used from the terminal. Follow this tutorial by O.S. Tezer <a href="https://www.digitalocean.com/community/tutorials/common-python-tools-using-virtualenv-installing-with-pip-and-managing-packages">Tutorial Link</a>.
+                It details how to set-up pip. It is a good read, but because you already should have Venv Burrito, skip the venv part.
+                Anyway, we are going to install the package which will handle the audio. Hit the plus button on the right. Type in "<a href="http://www.pyglet.org/" class="text-info">pyglet</a>". Click Install Package.
+                Hopefully everything has simply worked by this point and required minimal fiddling.
+            </p>
+            <div class="page-header">
+                <h1>Tkinter</h1>
+            </div>
+            <h3>Installation</h3>
+            <p>
+                Luckily the installation of Tkinter is fairly straightforward. Open a terminal. Type:
+            </p>
+            <div class="well">
+                <b>apt-get install python-tk</b>
+            </div>
+            <p>
+                If the installation needs permission use "sudo" in front of apt-get. Those should be the basics! Let's move
+                on to Dinomuncher.
+            </p>
+            <a href="dinomuncher.html" type="button" class="btn btn-primary">Dinomuncher!</a>
+        </div>
+    </div>
+
+
+
+<!-- footer
+================================================== -->
+    <br><br>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+
+            <ul class="list-unstyled">
+              <li class="pull-right"><a href="#top">Back to top</a></li>
+              <li><a href="https://twitter.com/asarenski">Twitter</a></li>
+              <li><a href="https://github.com/asarenski">GitHub</a></li>
+              <li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=M7QM8QCU6VJRJ">Donate</a></li>
+            </ul>
+            <p>Made by Adam Sarenski</a>. Contact him at <a href="mailto:asarenski@gmail.com">asarenski@gmail.com</a>.</p>
+            <p>Background photo taken by Alana Baker. <i>Wachusett Reservoir</i>.</p>
+            <p>Based on <a href="http://getbootstrap.com" rel="nofollow">Bootstrap</a>. Web fonts from <a href="http://www.google.com/webfonts" rel="nofollow">Google</a>.</p>
+
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    </div>
+    </div>
+</body>
+</html>

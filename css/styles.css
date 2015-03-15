@@ -1,9 +1,13 @@
-/* old stuff for reference */
+/* index.html */
 
-/* h1 {
-    text-shadow: 1px 1px 1px #ccc
+#donateButton{
+    position:relative;
+    top:1em;
 }
-*/
+#followButton{
+    position:relative;
+    top:1em;
+}
 
 h1 h2{
     text-shadow: 1px 1px 1px #ccc
@@ -18,10 +22,6 @@ h1 h2{
 .jumbotron-special{
     background-color: #2b3e50;
 }
-/*
-p, div {
-    font-family: 'Nobile', Helvetica, Arial, sans-serif;
-}*/
 
 footer li{
     padding: 0 10px;
